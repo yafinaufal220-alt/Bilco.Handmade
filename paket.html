@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paket Snack Box - Bilco.Handmade</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS KHUSUS PAKET SNACK BOX --- */
+        .package-header {
+            background: linear-gradient(rgba(244, 241, 234, 0.9), rgba(244, 241, 234, 0.9)), 
+                        url('https://thumbs.dreamstime.com/b/jajan-pasar-festive-various-colorful-traditional-indonesian-snack-280084213.jpg');
+            background-size: cover;
+            padding: 80px 0;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .package-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            padding: 40px 15px;
+        }
+
+        @media (min-width: 768px) {
+            .package-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .pkg-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: 0.3s;
+            border: 1px solid #eee;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        body.dark-mode .pkg-card {
+            background: var(--white);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .pkg-card:hover { transform: translateY(-10px); }
+
+        .pkg-img {
+            height: 220px;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .pkg-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pkg-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--sugar);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pkg-content { 
+            padding: 25px; 
+            flex-grow: 1; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pkg-price {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--sage);
+            margin: 10px 0;
+        }
+
+        .pkg-list {
+            margin: 20px 0;
+            padding: 0;
+            list-style: none;
+            text-align: left;
+        }
+
+        .pkg-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.dark-mode .pkg-list li {
+            color: #ccc;
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+
+        .pkg-list li::before { content: '✅'; font-size: 14px; }
+
+        .btn-order-wa {
+            display: block;
+            text-align: center;
+            background: #25D366;
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: auto; 
+            transition: 0.3s;
+        }
+
+        .btn-order-wa:hover { opacity: 0.9; transform: scale(1.02); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container nav-container">
+        <div class="logo">Bilco.<span>Handmade</span></div>
+        
+        <nav id="mainNav">
+            <a href="index.html">Beranda</a>
+            <a href="katalog.html">Katalog</a>
+            <a href="paket.html" class="active">Paket Snack Box</a>
+            <a href="tentang.html">Tentang Kami</a>
+        </nav>
+
+        <div class="nav-icons">
+            <a href="keranjang.html" style="text-decoration: none; color: inherit;">
+                <div class="cart-icon">🛒<span id="cart-count">0</span></div>
+            </a>
+
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <section class="package-header">
+        <div class="container">
+            <h1 style="color: var(--sugar); font-size: 38px;">Paket Snack Box</h1>
+            <p style="max-width: 600px; margin: 15px auto; color: var(--sugar); opacity: 0.8;">
+                Solusi praktis untuk acara kantor, arisan, atau syukuran. Dikemas elegan, higienis, dan pastinya lezat.
+            </p>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="package-grid">
+            
+            <div class="pkg-card">
+                <div class="pkg-img">
+                    <img src="https://api.dapurbusastro.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsiZGF0YSI6MjIwMywicHVyIjoiYmxvYl9pZCJ9fQ==--e9860f41eed90363d90ae8866efb99fa85d29d6b/RqjLnuYDylInAhWOECi1.webp" alt="Paket Hemat">
+                    <div class="pkg-badge">Hemat</div>
+                </div>
+                <div class="pkg-content">
+                    <h3>Paket Sahabat</h3>
+                    <div class="pkg-price">Rp 12.500 <span style="font-size: 14px; font-weight: 400; color: #999;">/ box</span></div>
+                    <ul class="pkg-list">
+                        <li>Kue Talam Pandan</li>
+                        <li>Pastel Sayur</li>
+                        <li>Aqua Gelas</li>
+                        <li>Tisu & Logistik</li>
+                    </ul>
+                    <a href="https://wa.me/6282234618099?text=Halo%20Admin,%20saya%20ingin%20pesan%20Paket%20Sahabat" class="btn-order-wa">Pesan via WhatsApp</a>
+                </div>
+            </div>
+
+            <div class="pkg-card">
+                <div class="pkg-img">
+                    <img src="https://api.dapurbusastro.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsiZGF0YSI6MTYyNiwicHVyIjoiYmxvYl9pZCJ9fQ==--0e5710e7e0e891df7fea7310a19f8944df0e72b2/SNACK%20BOX%20SEKAR.jpg" alt="Paket Premium">
+                    <div class="pkg-badge" style="background: var(--sage);">Terlaris</div>
+                </div>
+                <div class="pkg-content">
+                    <h3>Paket Signature</h3>
+                    <div class="pkg-price">Rp 18.000 <span style="font-size: 14px; font-weight: 400; color: #999;">/ box</span></div>
+                    <ul class="pkg-list">
+                        <li>Risol Mayo Premium</li>
+                        <li>Kue Sus Vla</li>
+                        <li>Lemper Ayam</li>
+                        <li>Aqua Gelas</li>
+                        <li>Tisu & Logistik</li>
+                    </ul>
+                    <a href="https://wa.me/6282234618099?text=Halo%20Admin,%20saya%20ingin%20pesan%20Paket%20Signature" class="btn-order-wa">Pesan via WhatsApp</a>
+                </div>
+            </div>
+
+            <div class="pkg-card">
+                <div class="pkg-img">
+                    <img src="https://api.dapurbusastro.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsiZGF0YSI6MjIyNCwicHVyIjoiYmxvYl9pZCJ9fQ==--553907ee64bea4b5e0bac957946045fb572ccf17/H0KO8ZqM6ea6Lhb2ty7p.webp" alt="Paket Deluxe">
+                    <div class="pkg-badge" style="background: #B8860B;"> Premium </div>
+                </div>
+                <div class="pkg-content">
+                    <h3>Paket Eksklusif</h3>
+                    <div class="pkg-price">Rp 25.000 <span style="font-size: 14px; font-weight: 400; color: #999;">/ box</span></div>
+                    <ul class="pkg-list">
+                        <li>Sosis Solo</li>
+                        <li>Kue Ku Merah</li>
+                        <li>Risol Mayo</li>
+                        <li>Buah Potong Segar</li>
+                        <li>Teh Kotak / Aqua</li>
+                    </ul>
+                    <a href="https://wa.me/6282234618099?text=Halo%20Admin,%20saya%20ingin%20pesan%20Paket%20Eksklusif" class="btn-order-wa">Pesan via WhatsApp</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="background: var(--sage-light); padding: 40px; border-radius: 25px; margin-bottom: 80px; text-align: center;">
+            <h3 style="color: var(--sugar);">Mau Custom Isian Sendiri?</h3>
+            <p style="margin: 10px 0 20px; color: var(--sugar);">Kami melayani custom isian sesuai budget dan selera Anda.</p>
+            <a href="https://wa.me/6282234618099" class="btn-primary" style="display: inline-block; text-decoration: none;">Konsultasi Gratis Sekarang</a>
+        </div>
+    </section>
+    <a href="https://wa.me/6282234618099" class="wa-float">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA">
+        <span>Tanya Admin</span>
+    </a>
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h2 class="logo" style="color: white; margin-bottom: 20px;">Bilco.<span>Handmade</span></h2>
+                <p>Membawa kehangatan jajanan tradisional ke dalam kemasan modern yang higienis dan elegan.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Navigasi</h3>
+                <ul>
+                    <li><a href="index.html">Beranda</a></li>
+                    <li><a href="katalog.html">Katalog</a></li>
+                    <li><a href="paket.html">Kue Paket</a></li>
+                    <li><a href="tentang.html">Tentang Kami</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Hubungi Kami</h3>
+                <p>📍 Perum Puri Majapahit, Jl. Jayanegara No.02 Blok D, Gatul, Banjaragung, Kec. Puri, Kabupaten Mojokerto, Jawa Timur 61363</p>
+                <p>📞 0822-3461-8099</p>
+                <p>✉️ halo@bilcohandmade.id</p>
+            </div>
+
+            <div class="footer-col">
+                <h3>Jam Operasional</h3>
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; font-size: 14px; line-height: 1.6;">
+                    <p>Senin - Sabtu: 08.00 - 17.00</p>
+                    <p>Minggu: Tutup</p>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; margin-top: 40px; opacity: 0.7;">
+            &copy; 2026 Bilco.Handmade. Semua Hak Dilindungi.
+        </div>
+    </footer>
+
+    <script>
+        // 1. Inisialisasi Keranjang dari LocalStorage
+        let cart = JSON.parse(localStorage.getItem('bilcoCart')) || [];
+
+        // 2. Fungsi Menu Hamburger
+        function toggleMenu() {
+            const nav = document.getElementById("mainNav");
+            const hamburger = document.querySelector(".hamburger");
+            nav.classList.toggle("active");
+            hamburger.classList.toggle("active");
+        }
+
+        // 4. LOGIKA SISTEM KERANJANG
+        function updateCartBadge() {
+            const badge = document.getElementById('cart-count');
+            if (badge) {
+                const totalQty = cart.reduce((total, item) => total + item.qty, 0);
+                badge.innerText = totalQty;
+            }
+        }
+        function addToCart() {
+            // Ambil data dari modal yang sedang terbuka
+            const name = document.getElementById('modalTitle').innerText;
+            const priceText = document.getElementById('modalPrice').innerText;
+            const price = parseInt(priceText.replace(/[^0-9]/g, ''));
+            const img = document.getElementById('modalImg').src;
+
+            // Simpan ke LocalStorage
+            localStorage.setItem('bilcoCart', JSON.stringify(cart));
+            
+            // Update angka di header
+            updateCartBadge();           
+        }
+
+        // Jalankan update badge saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', updateCartBadge);
+    </script>
+</body>
+</html>

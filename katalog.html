@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Jajanan - Bilco.Handmade</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+    /* --- CSS KHUSUS KATALOG --- */
+    .catalog-header {
+        background: var(--sage-light);
+        padding: 60px 0;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 40px;
+        padding: 0 15px;
+        flex-wrap: wrap;
+    }
+
+    .search-wrapper {
+        position: relative;
+        flex: 1;
+        min-width: 280px;
+    }
+
+    .search-wrapper input {
+        width: 100%;
+        padding: 14px 20px 14px 45px;
+        border: 2px solid #eee;
+        border-radius: 15px;
+        font-family: inherit;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .search-wrapper input:focus { border-color: var(--sage); }
+
+    .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.4;
+    }
+
+    .dropdown { 
+        position: relative; 
+    }
+
+    .filter-dropdown-btn {
+        background: white;
+        padding: 14px 25px;
+        border: 2px solid var(--sage);
+        border-radius: 15px;
+        color: var(--sage);
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 200px;
+        width: 100%; 
+        justify-content: space-between;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: white;
+        width: 100%; 
+        box-shadow: 0px 10px 25px rgba(0,0,0,0.1);
+        z-index: 100;
+        border-radius: 15px;
+        margin-top: 8px;
+        max-height: 450px;
+        border: 1px solid #eee;
+        overflow-y: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .dropdown-content::-webkit-scrollbar {
+        display: none;
+    }
+
+    .dropdown-content a {
+        color: #444;
+        padding: 12px 20px;
+        text-decoration: none;
+        display: block;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .dropdown-content a:hover { background-color: var(--sage-light); color: var(--sage); }
+    
+    .show { display: block !important; }
+
+    /* --- SUB-MENU DROPDOWN (PANAH DI KANAN) --- */
+    .nested-dropdown { width: 100%; border-bottom: 1px solid #f5f5f5; }
+
+    .nested-btn {
+        display: flex !important;
+        justify-content: space-between; 
+        align-items: center;
+        background: #fff;
+        cursor: pointer;
+        user-select: none;
+        padding: 12px 20px !important;
+    }
+
+    .nested-btn span {
+        font-size: 10px;
+        opacity: 0.6;
+        transition: transform 0.3s ease;
+        display: inline-block;
+    }
+
+    .side-menu {
+        display: none; 
+        background: #fcfdfc; 
+        transition: all 0.3s ease;
+    }
+
+    .side-menu.active { display: block !important; }
+
+    .side-menu a {
+        padding: 10px 20px 10px 40px !important;
+        font-size: 13px !important;
+        font-weight: 500;
+        color: #666;
+        border-bottom: 1px solid #f9f9f9;
+        display: flex !important; 
+        align-items: center;
+        gap: 8px; 
+    }
+
+    .side-menu a::before {
+        content: "-";
+        color: var(--sage);
+        font-weight: bold;
+    }
+
+    .side-menu a:hover {
+        background: #f0f7f0 !important;
+        color: var(--sage);
+    }
+
+    /* --- PERBAIKAN GRID & KARTU OTOMATIS SEJAJAR --- */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 0 15px;
+        /* Menjaga agar grid item selalu setinggi item tertinggi dalam satu baris */
+        align-items: stretch; 
+    }
+
+    @media (min-width: 992px) {
+        .grid { grid-template-columns: repeat(4, 1fr); gap: 25px; padding: 0; }
+    }
+
+    .card.hidden, .card.page-hidden { display: none !important; }
+
+    .card { 
+        display: flex;
+        flex-direction: column; /* Mengatur isi kartu secara vertikal */
+        height: 100%; /* Memaksa kartu mengisi tinggi grid yang tersedia */
+        background: white;
+        border-radius: 20px;
+        transition: transform 0.3s, opacity 0.3s;
+        border: 1px solid #eee;
+    }
+
+    .card img { 
+        width: 100%; 
+        height: 180px; 
+        object-fit: cover; 
+        border-radius: 20px 20px 0 0; 
+    }
+
+    .card-info { 
+        padding: 15px; 
+        text-align: center; 
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1; /* Mengambil sisa ruang agar tombol terdorong ke bawah */
+    }
+
+    .card-info h4 { 
+        font-size: 16px; 
+        margin: 5px 0 10px 0; 
+        color: var(--sugar); 
+        min-height: 40px; /* Memberi ruang cadangan untuk teks 2 baris */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card-info .price { 
+        color: var(--sage); 
+        font-weight: 800; 
+        margin-bottom: 15px; 
+        font-size: 14px; 
+        margin-top: auto; /* KUNCI: Mendorong harga & tombol ke dasar kartu secara otomatis */
+    }
+
+    /* --- PAGINATION (ANTI GEPENG & SEJAJAR) --- */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin: 50px 0;
+    }
+
+    .page-btn {
+        padding: 10px 18px;
+        border: 2px solid var(--sage);
+        background: white;
+        color: var(--sage);
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        min-height: 42px;
+    }
+
+    .page-btn span { font-size: 16px; line-height: 1; }
+    .page-btn:hover:not(:disabled) { background: var(--sage); color: white; }
+    .page-btn:disabled { border-color: #eee; color: #ccc; cursor: not-allowed; }
+
+    .page-num {
+        width: 42px; 
+        height: 42px;
+        background: var(--sage);
+        color: white;
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        border-radius: 10px; 
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    /* --- MODAL --- */
+    .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+    .modal-content { background: #fff; margin: 5% auto; padding: 30px; width: 90%; max-width: 700px; border-radius: 25px; position: relative; animation: zoomIn 0.3s ease; }
+    
+    @keyframes zoomIn { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+    
+    .close-modal { position: absolute; right: 20px; top: 10px; font-size: 35px; cursor: pointer; color: #999; }
+    
+    .modal-body { display: flex; gap: 30px; flex-wrap: wrap; align-items: stretch; }
+    .modal-img { flex: 1; min-width: 250px; }
+    .modal-img img { width: 100%; border-radius: 15px; height: 100%; min-height: 250px; object-fit: cover; }
+    .modal-info { flex: 1; min-width: 250px; display: flex; flex-direction: column; justify-content: space-between; }
+
+    #modalDesc {
+    text-align: justify;
+    line-height: 1.5; /* Opsional: agar teks lebih enak dibaca */
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="container nav-container">
+        <div class="logo">Bilco.<span>Handmade</span></div>
+        
+        <nav id="mainNav">
+            <a href="index.html">Beranda</a>
+            <a href="katalog.html" class="active">Katalog</a>
+            <a href="paket.html">Paket Snack Box</a>
+            <a href="tentang.html">Tentang Kami</a>
+        </nav>
+
+        <div class="nav-icons">
+            <a href="keranjang.html" style="text-decoration: none; color: inherit;">
+                <div class="cart-icon">🛒<span id="cart-count">0</span></div>
+            </a>
+
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="catalog-header">
+    <div class="container">
+        <h1 style="color: var(--sugar); font-size: 32px;">Menu Jajanan</h1>
+        <p style="opacity: 0.8; margin-top: 10px;">Dibuat fresh setiap hari dengan bahan premium.</p>
+    </div>
+</section>
+
+<section class="container">
+    <div class="action-bar">
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Cari jajanan favoritmu..." onkeyup="searchProduct()">
+        </div>
+
+        <div class="dropdown">
+            <button class="filter-dropdown-btn" id="filterBtn">
+                <span>Semua Kategori</span>
+                <span style="font-size: 10px;">▼</span>
+            </button>
+
+            <div class="dropdown-content" id="filterDropdown">
+                <a href="javascript:void(0)" onclick="filterProduct('semua', 'Semua Kategori')">Semua Kategori</a>
+                <a href="javascript:void(0)" onclick="filterProduct('best-seller', 'Best Seller')">Best Seller</a>
+                <a href="javascript:void(0)" onclick="filterProduct('mingguan', 'Menu Minggu Ini')">Menu Minggu Ini</a>
+                <a href="javascript:void(0)" onclick="filterProduct('cake-utuh', 'Cake')">Cake</a>
+
+                <div class="nested-dropdown">
+                    <a href="javascript:void(0)" class="nested-btn" onclick="toggleSubMenu(event, this)">Kue Basah <span style="float:right">▼</span></a>
+                    <div class="side-menu">
+                        <a href="javascript:void(0)" onclick="filterProduct('basah-manis', 'Kue Basah: Manis')">Manis</a>
+                        <a href="javascript:void(0)" onclick="filterProduct('basah-gurih', 'Kue Basah: Gurih')">Gurih</a>
+                    </div>
+                </div>
+
+                <a href="javascript:void(0)" onclick="filterProduct('taart', 'Taart')">Taart</a>
+                <a href="javascript:void(0)" onclick="filterProduct('cookies', 'Cookies')">Cookies</a>
+
+                <div class="nested-dropdown">
+                    <a href="javascript:void(0)" class="nested-btn" onclick="toggleSubMenu(event, this)">Puding <span style="float:right">▼</span></a>
+                    <div class="side-menu">
+                        <a href="javascript:void(0)" onclick="filterProduct('puding-mini', 'Puding: Mini')">Mini</a>
+                        <a href="javascript:void(0)" onclick="filterProduct('puding-utuh', 'Puding: Utuh')">Utuh</a>
+                    </div>
+                </div>
+
+                <a href="javascript:void(0)" onclick="filterProduct('bubur', 'Bubur')">Bubur</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid" id="productGrid">
+        <div class="card" data-category="basah-gurih mingguan">
+            <img src="./gambar/satuan/kue basah/gurih/risoles.jpeg" alt="Risol">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Risoles Ragout</h4>
+                <p class="price">Rp 7.750</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Risoles Ragout', 'Rp 7.750', './gambar/satuan/kue basah/gurih/risoles.jpeg', 'Nikmati Risoles Ragout dengan isian ayam dan wortel yang super creamy. Dibuat fresh setiap hari menggunakan bahan premium tanpa pengawet. Gurihnya pas, cocok untuk camilan segala suasana!')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-gurih mingguan">
+            <img src="./gambar/satuan/kue basah/gurih/lemper.jpeg" alt="Lemper">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Lemper Bakar</h4>
+                <p class="price">Rp 6.500</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Lemper Bakar', 'Rp 6.500', './gambar/satuan/kue basah/gurih/lemper.jpeg', 'Nikmati kelezatan ketan pilihan yang pulen dan gurih, diisi dengan suwiran daging ayam yang melimpah. Dibakar secara tradisional dengan bungkus daun pisang untuk aroma harum yang khas dan menggugah selera.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis mingguan">
+            <img src="./gambar/satuan/kue basah/manis/kueku.jpeg" alt="Kue Thok">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Kue Thok</h4>
+                <p class="price">Rp 5.250</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Kue Thok', 'Rp 5.250', './gambar/satuan/kue basah/manis/kueku.jpeg', 'Nikmati kelembutan kulit ketan yang kenyal nan cantik dengan isian kacang hijau kupas yang dihaluskan secara halus. Kue tradisional ini hadir dengan cita rasa manis yang pas, dibuat fresh setiap hari tanpa bahan pengawet untuk menjamin kualitas terbaik bagi Anda.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis mingguan">
+            <img src="./gambar/satuan/kue basah/manis/putuayu.jpeg" alt="Puthu Ayu">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Puthu Ayu</h4>
+                <p class="price">Rp 3.750</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Puthu Ayu', 'Rp 3.750', './gambar/satuan/kue basah/manis/putuayu.jpeg', 'Nikmati perpaduan harmonis antara bolu pandan yang empuk dan harum dengan taburan kelapa parut segar di atasnya. Kue tradisional ini memiliki tekstur yang ringan dan rasa manis yang pas, sangat cocok sebagai kudapan pendamping minum teh atau pelengkap acara spesial Anda.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis mingguan">
+            <img src="./gambar/satuan/kue basah/manis/cantik manis jagung.jpeg" alt="Cantik Manis Jagung">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Cantik Manis Jagung</h4>
+                <p class="price">Rp 5.750</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Cantik Manis Jagung', 'Rp 5.750', './gambar/satuan/kue basah/manis/cantik manis jagung.jpeg', 'Nikmati kudapan tradisional yang cantik dengan tekstur kenyal dan lembut di setiap suapan. Dipadukan dengan butiran jagung manis segar yang memberikan sensasi rasa unik dan aroma yang menggoda. Sangat pas untuk hidangan acara keluarga atau camilan sore Anda.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis mingguan">
+            <img src="./gambar/satuan/kue basah/manis/cenil singkong.jpeg" alt="Cenil Singkong">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Cenil Singkong</h4>
+                <p class="price">Rp 4.750</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Cenil Singkong', 'Rp 4.750', './gambar/satuan/kue basah/manis/cenil singkong.jpeg', 'Kudapan tradisional dari singkong pilihan dengan tekstur kenyal dan warna-warni cantik. Disajikan dengan taburan kelapa parut segar yang memberikan rasa gurih alami.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis mingguan">
+            <img src="./gambar/satuan/kue basah/manis/ongol ongol.jpeg" alt="ongol ongol">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Ongol Ongol</h4>
+                <p class="price">Rp 5.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Ongol Ongol', 'Rp 5.000', './gambar/satuan/kue basah/manis/ongol ongol.jpeg', 'Kue tradisional klasik dengan tekstur kenyal dan rasa manis yang pas. Disajikan dengan parutan kelapa segar untuk kombinasi rasa manis-gurih yang otentik.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis mingguan">
+            <img src="./gambar/satuan/kue basah/manis/ketan srikaya.jpeg" alt="Ketan Srikaya">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Ketan Srikaya</h4>
+                <p class="price">Rp 5.250</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Ketan Srikaya', 'Rp 5.250', './gambar/satuan/kue basah/manis/ketan srikaya.jpeg', 'Kue tradisional dua lapis dengan ketan gurih di bagian bawah dan srikaya pandan lembut di atasnya. Memiliki cita rasa manis-gurih yang pas dengan aroma pandan alami yang harum.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis">
+            <img src="./gambar/satuan/kue basah/manis/klepon.jpeg" alt="Klepon">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Klepon</h4>
+                <p class="price">Rp 5.250</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Klepon', 'Rp 5.250', './gambar/satuan/kue basah/manis/klepon.jpeg', 'Bola-bola ketan kenyal dengan isian gula merah cair yang pecah di mulut. Disajikan dengan balutan parutan kelapa segar untuk rasa manis dan gurih yang seimbang.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis">
+            <img src="./gambar/satuan/kue basah/manis/kue kacamata.jpeg" alt="Kue kacamata">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Kue Kacamata</h4>
+                <p class="price">Rp 4.750</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Kue Kacamata', 'Rp 4.750', './gambar/satuan/kue basah/manis/kue kacamata.jpeg', 'Kue tradisional berbahan dasar singkong parut kenyal dengan isian pisang utuh di tengahnya. Disajikan dengan parutan kelapa gurih, memberikan perpaduan rasa manis alami dan aroma yang menggoda.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="cake-utuh">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/Cake mocca mesis besar.jpeg" alt="Cake Mocca Mesis (Besar)">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE & PASTRY</span>
+                <h4>Cake Mocca Mesis (Besar)</h4>
+                <p class="price">Rp 105.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Cake Mocca Mesis (Besar)', 'Rp 105.000', './gambar/satuan/cake & pastry/cake utuh/Cake mocca mesis besar.jpeg', 'Nikmati kelezatan cake dengan tekstur bolu yang sangat lembut dan ringan. Dipadukan dengan aroma mocca yang khas, olesan krim premium, serta balutan cokelat mesis yang memberikan rasa manis yang pas di setiap gigitan.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="cake-utuh">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/Cake mocca mesis kecil.jpeg" alt="Cake Mocca Mesis (kecil)">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE & PASTRY</span>
+                <h4>Cake Mocca Mesis (kecil)</h4>
+                <p class="price">Rp 65.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Cake Mocca Mesis (kecil)', 'Rp 65.000', './gambar/satuan/cake & pastry/cake utuh/Cake mocca mesis kecil.jpeg', 'Nikmati kelezatan cake dengan tekstur bolu yang sangat lembut dan ringan. Dipadukan dengan aroma mocca yang khas, olesan krim premium, serta balutan cokelat mesis yang memberikan rasa manis yang pas di setiap gigitan.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis">
+            <img src="./gambar/satuan/kue basah/manis/sentiling.jpeg" alt="Sentiling">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Sentiling</h4>
+                <p class="price">Rp 4.750</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Sentiling', 'Rp 4.750', './gambar/satuan/kue basah/manis/sentiling.jpeg', 'Nikmati jajanan tradisional berbahan dasar singkong pilihan yang diolah hingga memiliki tekstur kenyal yang pas. Tampilannya yang ceria dipadukan dengan taburan kelapa parut segar, memberikan keseimbangan rasa manis dan gurih yang autentik.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis">
+            <img src="./gambar/satuan/kue basah/manis/talam nona manis.jpeg" alt="talam nona manis">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Talam Nona Manis</h4>
+                <p class="price">Rp 4.750</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Talam Nona Manis', 'Rp 4.750', './gambar/satuan/kue basah/manis/talam nona manis.jpeg', 'Nikmati perpaduan harmonis antara tekstur lembut kue talam beraroma pandan alami dengan bagian tengah vla santan yang gurih dan creamy. Bentuknya yang cantik dan rasanya yang legit menjadikannya camilan tradisional favorit untuk segala momen istimewa Anda.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis">
+            <img src="./gambar/satuan/kue basah/manis/talam ubi.jpeg" alt="talam ubi">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Talam Ubi</h4>
+                <p class="price">Rp 5.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Talam Ubi', 'Rp 5.000', './gambar/satuan/kue basah/manis/talam ubi.jpeg', 'Kue tradisional dua lapis yang memadukan kelembutan adonan ubi kuning asli dengan lapisan putih santan yang kental dan gurih. Teksturnya yang kenyal lembut memberikan sensasi rasa manis alami yang memanjakan lidah.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-gurih mingguan">
+            <img src="./gambar/satuan/kue basah/gurih/lumpia.jpeg" alt="lumpia">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Lumpia Sayur</h4>
+                <p class="price">Rp 7.500</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Lumpia Sayur', 'Rp 7.500', './gambar/satuan/kue basah/gurih/lumpia.jpeg', 'Lumpia renyah dengan isian sayuran segar yang gurih, sangat pas dinikmati bersama cocolan saus tauco atau cabai rawit.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-gurih mingguan">
+            <img src="./gambar/satuan/kue basah/gurih/macaroni schotel panggang.jpeg" alt="macaroni schotel panggang">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Macaroni Schotel</h4>
+                <p class="price">Rp 20.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Macaroni Schotel Panggang', 'Rp 20.000', './gambar/satuan/kue basah/gurih/macaroni schotel panggang.jpeg', 'Macaroni panggang gurih dengan tekstur creamy, perpaduan susu dan keju yang melimpah, disajikan hangat dalam wadah aluminium foil.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-gurih best-seller">
+            <img src="./gambar/satuan/kue basah/gurih/pastel ragout.jpeg" alt="pastel ragout">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Pastel Ragout</h4>
+                <p class="price">Rp 6.500</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Pastel Ragout', 'Rp 6.500', './gambar/satuan/kue basah/gurih/pastel ragout.jpeg', 'Nikmati kelezatan Pastel Ragout yang memiliki kulit super renyah dengan isian ragout ayam dan telur yang gurih nan lembut, pilihan sempurna untuk camilan berkualitas di setiap suasana.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-gurih">
+            <img src="./gambar/satuan/kue basah/gurih/siomay.jpeg" alt="Siomay">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>siomay</h4>
+                <p class="price">Rp 5.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Siomay', 'Rp 5.000', './gambar/satuan/kue basah/gurih/siomay.jpeg', 'Rasakan kelezatan dimsum siomay yang padat dan kenyal dengan perpaduan daging ayam serta udang pilihan, disajikan dengan topping parutan wortel segar yang menggugah selera.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-gurih mingguan">
+            <img src="./gambar/satuan/kue basah/gurih/sus maker.jpeg" alt="pastel ragout">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Sus Maker</h4>
+                <p class="price">Rp 5.570</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Sus Maker', 'Rp 5.570', './gambar/satuan/kue basah/gurih/sus maker.jpeg', 'Nikmati kelembutan roti panggang Sus Maker dengan kejutan isian sosis ayam yang gurih dan melimpah, camilan premium yang bikin ketagihan di setiap gigitan!')">Detail</button>
+            </div>
+        </div>        
+
+        <div class="card" data-category="taart">
+            <img src="./gambar/satuan/taart/tart custom diameter 16cm.jpeg" alt="tart custom diameter 16 cm">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">TAART</span>
+                <h4>Taart Custom Diameter 16cm</h4>
+                <p class="price">Rp 275.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Taart Custom Diameter 16cm', 'Rp 275.000', './gambar/satuan/taart/tart custom diameter 16cm.jpeg', 'Kue tart custom eksklusif dengan dekorasi minimalist icing yang cantik, sangat cocok untuk merayakan momen spesial seperti Bridal Shower, ulang tahun, atau acara istimewa lainnya sesuai permintaan Anda.')">Detail</button>
+            </div>
+        </div>        
+
+        <div class="card" data-category="taart">
+            <img src="./gambar/satuan/taart/tart custom diameter 20cm.jpeg" alt="tart custom diameter 20cm">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">TAART</span>
+                <h4>Taart Custom Diameter 20cm</h4>
+                <p class="price">Rp 550.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Taart Custom Diameter 20cm', 'Rp 550.000', './gambar/satuan/taart/tart custom diameter 20cm.jpeg', 'Kue tart custom eksklusif dengan dekorasi minimalist icing yang cantik, sangat cocok untuk merayakan momen spesial seperti Bridal Shower, ulang tahun, atau acara istimewa lainnya sesuai permintaan Anda.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="taart">
+            <img src="./gambar/satuan/taart/tart mocca diameter 20cm 2.jpeg" alt="tart mocca diameter 20cm">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">TAART</span>
+                <h4>Taart Mocca Diameter 20cm</h4>
+                <p class="price">Rp 375.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Taart Mocca Diameter 20cm', 'Rp 375.000', './gambar/satuan/taart/tart mocca diameter 20cm 2.jpeg', 'Kue tart aroma moka klasik yang elegan, dihias dengan buttercream lembut, potongan cokelat batang premium, dan buah stroberi segar di atasnya. Pilihan sempurna untuk merayakan ulang tahun atau momen spesial keluarga dengan cita rasa yang mewah.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="taart">
+            <img src="./gambar/satuan/taart/tart custom diameter 20cm 2.jpeg" alt="tart custom diameter 20 cm">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">TAART</span>
+                <h4>Taart Custom Diameter 20cm</h4>
+                <p class="price">Rp 415.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Taart Custom Diameter 20cm', 'Rp 415.000', './gambar/satuan/taart/tart custom diameter 20cm 2.jpeg', 'Kue tart kustom eksklusif dengan dekorasi minimalist icing yang cantik, sangat cocok untuk merayakan momen spesial seperti Bridal Shower, ulang tahun, atau acara istimewa lainnya sesuai permintaan Anda.')">Detail</button>
+            </div>
+        </div>        
+
+        <div class="card" data-category="bubur">
+            <img src="./gambar/satuan/bubur/bubur madura.jpeg" alt="bubur madura">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">BUBUR</span>
+                <h4>Bubur Madura</h4>
+                <p class="price">Rp 875.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Bubur Madura', 'Rp 875.000', './gambar/satuan/bubur/bubur madura.jpeg', 'Sajian istimewa nampan besar yang menghidangkan aneka bubur tradisional khas Madura, mulai dari bubur sumsum yang lembut, bubur ketan hitam, hingga biji salak, lengkap dengan siraman santan gurih dan saus gula merah yang kental. Sangat ideal sebagai hidangan katering atau hantaran acara keluarga.')">Detail</button>
+            </div>
+        </div>        
+
+        <div class="card" data-category="basah-gurih mingguan">
+            <img src="./gambar/satuan/kue basah/gurih/tahu isi sayur.jpeg" alt="tahu isi sayur">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Tahu Isi Sayur</h4>
+                <p class="price">Rp 6.500</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Tahu Isi Sayur', 'Rp 6.500', './gambar/satuan/kue basah/gurih/tahu isi sayur.jpeg', 'Tahu goreng renyah yang diisi melimpah dengan tumisan sayuran segar yang gurih, disajikan hangat lengkap dengan cabai rawit hijau untuk sensasi pedas yang pas.')">Detail</button>
+            </div>
+        </div>
+        
+        <div class="card" data-category="basah-gurih mingguan best-seller">
+            <img src="./gambar/satuan/kue basah/gurih/sosis solo.jpeg" alt="sosis solo">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Sosis Solo</h4>
+                <p class="price">Rp 6.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Sosis Solo', 'Rp 6.000', './gambar/satuan/kue basah/gurih/sosis solo.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>
+        
+        <div class="card" data-category="cake-utuh">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/bolu.jpeg" alt="roll cocopandan">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
+                <h4>Roll Cocopandan</h4>
+                <p class="price">Rp 5.500</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Roll Cocopandan', 'Rp 5.500', './gambar/satuan/cake & pastry/cake utuh/bolu.jpeg', 'Camilan khas Solo berupa dadar telur .')">Detail</button>
+            </div>
+        </div>
+        
+        <div class="card" data-category="cake-utuh mingguan">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/cake blueberry.jpeg" alt="blueberry cake">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
+                <h4>Blueberry Cake</h4>
+                <p class="price">Rp 4.500</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Blueberry Cake', 'Rp 4.500', './gambar/satuan/cake & pastry/cake utuh/cake blueberry.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>        
+
+        <div class="card" data-category="cake-utuh mingguan">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/fruit pie.jpeg" alt="fruit pie">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
+                <h4>Fruit Pie</h4>
+                <p class="price">Rp 8.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Fruit Pie', 'Rp 8.000', './gambar/satuan/cake & pastry/cake utuh/fruit pie.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="cake-utuh mingguan">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/fruity roll.jpeg" alt="fruity roll">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
+                <h4>Fruity Roll</h4>
+                <p class="price">Rp 6.500</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Fruity Roll', 'Rp 6.500', './gambar/satuan/cake & pastry/cake utuh/fruity roll.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="cake-utuh mingguan">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/pineapple pie.jpeg" alt="pineapple pie">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
+                <h4>Pineapple Pie</h4>
+                <p class="price">Rp 7.500</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Pineapple Pie', 'Rp 7.500', './gambar/satuan/cake & pastry/cake utuh/pineapple pie.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="cake-utuh mingguan best-seller">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/proll tape.jpeg" alt="proll tape">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
+                <h4>Proll Tape</h4>
+                <p class="price">Rp 4.750</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Proll Tape', 'Rp 4.750', './gambar/satuan/cake & pastry/cake utuh/proll tape.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="cake-utuh mingguan best-seller">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/roll cherry.jpeg" alt="roll cherry">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
+                <h4>Roll Cherry</h4>
+                <p class="price">Rp 5.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Roll Cherry', 'Rp 5.000', './gambar/satuan/cake & pastry/cake utuh/roll cherry.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="cake-utuh mingguan">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/roll mocca.jpeg" alt="roll mocca">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
+                <h4>Roll Mocca</h4>
+                <p class="price">Rp 5.750</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Roll Mocca', 'Rp 5.750', './gambar/satuan/cake & pastry/cake utuh/roll mocca.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="cake-utuh mingguan">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/truffle.jpeg" alt="truffle">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
+                <h4>Truffle</h4>
+                <p class="price">Rp 5.500</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Truffle', 'Rp 5.500', './gambar/satuan/cake & pastry/cake utuh/truffle.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>
+        
+        <div class="card" data-category="basah-manis mingguan best-seller">
+            <img src="./gambar/satuan/kue basah/manis/getas.jpeg" alt="getas">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Getas</h4>
+                <p class="price">Rp 3.750</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Getas', 'Rp 3.750', './gambar/satuan/kue basah/manis/getas.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>        
+
+        <div class="card" data-category="basah-manis mingguan best-seller">
+            <img src="./gambar/satuan/kue basah/manis/gethuk.jpeg" alt="gethuk lindri">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Gethuk Lindri</h4>
+                <p class="price">Rp 4.500</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Gethuk Lindri', 'Rp 4.500', './gambar/satuan/kue basah/manis/gethuk.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis mingguan">
+            <img src="./gambar/satuan/kue basah/manis/padamaran.jpeg" alt="padamaran">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Padamaran</h4>
+                <p class="price">Rp 6.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Padamaran', 'Rp 6.000', './gambar/satuan/kue basah/manis/padamaran.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis mingguan">
+            <img src="./gambar/satuan/kue basah/manis/timus.jpeg" alt="timus">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Timus</h4>
+                <p class="price">Rp 6.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Timus', 'Rp 6.000', './gambar/satuan/kue basah/manis/timus.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>
+
+        <div class="card" data-category="basah-manis mingguan best-seller">
+            <img src="./gambar/satuan/kue basah/manis/putrimandi.jpeg" alt="putri mandi">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Putri Mandi</h4>
+                <p class="price">Rp 6.750</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Putri Mandi', 'Rp 6.750', './gambar/satuan/kue basah/manis/putrimandi.jpeg', 'Camilan khas Solo berupa dadar telur lembut yang digulung dengan isian daging ayam suwir berbumbu gurih dan manis, kemudian digoreng hingga keemasan. Sangat cocok dinikmati sebagai kudapan ringan atau teman minum teh.')">Detail</button>
+            </div>
+        </div>        
+    </div>
+
+    <div class="pagination">
+        <button class="page-btn" id="prevBtn" onclick="changePage(-1)">
+            <span>&larr;</span> Sebelumnya
+        </button>
+        <div class="page-num" id="pageNum">1</div>
+        <button class="page-btn" id="nextBtn" onclick="changePage(1)">
+            Selanjutnya <span>&rarr;</span>
+        </button>
+    </div>
+</section>
+
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h2 class="logo" style="color: white; margin-bottom: 20px;">Bilco.<span>Handmade</span></h2>
+                <p>Membawa kehangatan jajanan tradisional ke dalam kemasan modern yang higienis dan elegan.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Navigasi</h3>
+                <ul>
+                    <li><a href="index.html">Beranda</a></li>
+                    <li><a href="katalog.html">Katalog</a></li>
+                    <li><a href="paket.html">Kue Paket</a></li>
+                    <li><a href="tentang.html">Tentang Kami</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Hubungi Kami</h3>
+                <p>📍 Perum Puri Majapahit, Jl. Jayanegara No.02 Blok D, Gatul, Banjaragung, Kec. Puri, Kabupaten Mojokerto, Jawa Timur 61363</p>
+                <p>📞 0822-3461-8099</p>
+                <p>✉️ halo@bilcohandmade.id</p>
+            </div>
+
+            <div class="footer-col">
+                <h3>Jam Operasional</h3>
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; font-size: 14px; line-height: 1.6;">
+                    <p>Senin - Sabtu: 08.00 - 17.00</p>
+                    <p>Minggu: Tutup</p>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; margin-top: 40px; opacity: 0.7;">
+            &copy; 2026 Bilco.Handmade. Semua Hak Dilindungi.
+        </div>
+    </footer>
+
+
+<div id="productModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeDetail()">&times;</span>
+        <div class="modal-body">
+            <div class="modal-img"><img id="modalImg" src="" alt="Produk"></div>
+            <div class="modal-info">
+                <div>
+                    <h2 id="modalTitle" style="margin-top: 0;">Nama Produk</h2>
+                    <p id="modalPrice" class="price" style="color: var(--sage); font-weight: 800; font-size: 24px; margin: 15px 0;">Rp 0</p>
+                    <p id="modalDesc" style="line-height: 1.6; color: #555;">Deskripsi akan muncul di sini.</p>
+                </div>
+                <div style="margin-top: 25px;">
+                    <button class="btn-primary" style="width: 100%; border:none; cursor:pointer; padding: 15px; font-weight: 700; border-radius: 12px;" onclick="addToCart()">Tambah ke Keranjang</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let cart = JSON.parse(localStorage.getItem('bilcoCart')) || [];
+    
+    // MENGGUNAKAN sessionStorage: Hilang saat tab ditutup, tetap ada saat refresh
+    let currentPage = parseInt(sessionStorage.getItem('bilcoCurrentPage')) || 1; 
+    const itemsPerPage = 8;
+
+    // 1. Fungsi Keranjang
+    function updateCartBadge() {
+        const badge = document.getElementById('cart-count');
+        if (badge) {
+            const totalQty = cart.reduce((total, item) => total + (item.qty || 0), 0);
+            badge.innerText = totalQty;
+        }
+    }
+
+    function addToCart() {
+        const name = document.getElementById('modalTitle').innerText;
+        const priceText = document.getElementById('modalPrice').innerText;
+        const price = parseInt(priceText.replace(/[^0-9]/g, ''));
+        const img = document.getElementById('modalImg').src;
+        const existingItem = cart.find(item => item.name === name);
+        if (existingItem) { existingItem.qty += 1; } 
+        else { cart.push({ name, price, img, qty: 1 }); }
+        localStorage.setItem('bilcoCart', JSON.stringify(cart));
+        updateCartBadge(); 
+        alert(`${name} berhasil ditambahkan!`);
+        closeDetail();
+    }
+
+    // 2. Logika Pagination
+    function displayProducts() {
+        const cards = Array.from(document.querySelectorAll('.card:not(.hidden)'));
+        const totalPages = Math.ceil(cards.length / itemsPerPage);
+        
+        if (currentPage > totalPages && totalPages > 0) {
+            currentPage = totalPages;
+        }
+
+        document.getElementById('pageNum').innerText = currentPage;
+        cards.forEach((card, index) => {
+            card.classList.add('page-hidden');
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            if (index >= start && index < end) card.classList.remove('page-hidden');
+        });
+        document.getElementById('prevBtn').disabled = (currentPage === 1);
+        document.getElementById('nextBtn').disabled = (currentPage === totalPages || totalPages === 0);
+        
+        // Simpan ke sessionStorage agar aman saat refresh tapi reset saat keluar
+        sessionStorage.setItem('bilcoCurrentPage', currentPage);
+    }
+
+    function changePage(direction) {
+        currentPage += direction;
+        displayProducts();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 3. Filter & Search
+    function filterProduct(category, label) {
+        const cards = document.querySelectorAll('.card');
+        document.getElementById('filterBtn').querySelector('span').innerText = label;
+        cards.forEach(card => {
+            const cat = card.getAttribute('data-category');
+            if (category === 'semua' || (cat && cat.includes(category))) {
+                card.classList.remove('hidden');
+            } else { card.classList.add('hidden'); }
+        });
+        currentPage = 1;
+        displayProducts();
+        document.getElementById('filterDropdown').classList.remove('show');
+    }
+
+    function searchProduct() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            const title = card.querySelector('h4').innerText.toLowerCase();
+            if (title.includes(input)) { card.classList.remove('hidden'); } 
+            else { card.classList.add('hidden'); }
+        });
+        currentPage = 1;
+        displayProducts();
+    }
+
+    // 4. Logika Dropdown & Sub-Menu
+    const filterBtn = document.getElementById('filterBtn');
+    const filterDropdown = document.getElementById('filterDropdown');
+    
+    filterBtn.onclick = (e) => { 
+        e.stopPropagation(); 
+        filterDropdown.classList.toggle('show'); 
+    }
+
+    function toggleSubMenu(event, element) {
+        event.stopPropagation();
+        const subMenu = element.nextElementSibling;
+        subMenu.classList.toggle('active');
+        const arrow = element.querySelector('span');
+        if (subMenu.classList.contains('active')) {
+            arrow.style.transform = "rotate(180deg)";
+        } else {
+            arrow.style.transform = "rotate(0deg)";
+        }
+    }
+
+    window.onclick = function(event) {
+        const isClickInsideDropdown = event.target.closest('.dropdown');
+        if (!isClickInsideDropdown) {
+            filterDropdown.classList.remove('show');
+            document.querySelectorAll('.side-menu').forEach(menu => menu.classList.remove('active'));
+        }
+        if (event.target == document.getElementById("productModal")) closeDetail();
+    }
+
+    // 5. UI Helpers
+    function toggleMenu() {
+        document.getElementById("mainNav").classList.toggle("active");
+        document.querySelector(".hamburger").classList.toggle("active");
+    }
+
+    function openDetail(title, price, img, desc) {
+        document.getElementById("modalTitle").innerText = title;
+        document.getElementById("modalPrice").innerText = price;
+        document.getElementById("modalImg").src = img;
+        document.getElementById("modalDesc").innerText = desc;
+        document.getElementById("productModal").style.display = "block";
+    }
+
+    function closeDetail() { 
+        document.getElementById("productModal").style.display = "none"; 
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCartBadge();
+        displayProducts();
+    });
+</script>
+</body>
+</html>
