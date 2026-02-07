@@ -154,7 +154,7 @@ nav a.active, nav a:hover, .nav-item:hover .dropbtn { color: var(--sage); }
 /* --- Hero Section --- */
 .hero { 
     min-height: 500px; 
-    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://thumbs.dreamstime.com/b/jajan-pasar-kue-tampah-indonesian-various-street-food-jajanan-pasar-jajan-pasar-various-colorful-traditional-indonesian-417616690.jpg') center/cover;
+    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('./gambar/logo/background\ headr.jpeg') center/cover;
     position: relative; 
     margin-bottom: 0; 
     display: flex; 
@@ -267,10 +267,11 @@ footer {
     box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
     z-index: 2000; 
     font-size: 14px;
+    transition: 0.3s ease;
 }
 
 .wa-float:hover { transform: scale(1.05); background: #20ba5a; }
-.wa-float img { width: 20px; filter: brightness(0) invert(1); }
+.wa-float img { width: 22px; filter: brightness(0) invert(1); }
 
 /* --- Responsivitas Utama --- */
 @media (max-width: 992px) {
@@ -296,7 +297,7 @@ footer {
     }
     
     nav {
-        display: none; /* Sembunyikan nav standar di mobile, gunakan JS untuk toggle .active */
+        display: none; 
         flex-direction: column;
         position: fixed;
         top: 0;
@@ -334,4 +335,21 @@ footer {
 
     .hero-content h1 { font-size: 32px; }
     .grid { grid-template-columns: 1fr !important; }
+
+    /* Penyesuaian Tombol WA agar Bulat dan Logo Kecil di HP */
+    .wa-float {
+        width: 50px;           /* Ukuran lingkaran lebih kecil */
+        height: 50px;
+        padding: 0;            /* Hapus padding teks */
+        justify-content: center; 
+        border-radius: 50%;    /* Bulat sempurna */
+    }
+
+    .wa-float span {
+        display: none;         /* Sembunyikan teks "Tanya Admin" */
+    }
+
+    .wa-float img {
+        width: 24px;           /* Ukuran logo WA kecil di dalam lingkaran */
+    }
 }
