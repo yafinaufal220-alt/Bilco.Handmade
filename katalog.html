@@ -1028,8 +1028,8 @@
             <div class="card-info">
                 <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
                 <h4>Brownies Cokelat</h4>
-                <p class="price">--</p>
-                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Brownies Cokelat', '--', './gambar/satuan/cake & pastry/cake utuh/brownies cokelat AI.png', '--')">Lihat Detail</button>
+                <p class="price">5.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Brownies Cokelat', '5.000', './gambar/satuan/cake & pastry/cake utuh/brownies cokelat AI.png', '--')">Lihat Detail</button>
             </div>
         </div>        
 
@@ -1064,12 +1064,12 @@
         </div>
 
         <div class="card" data-category="cake-utuh">
-            <img src="./gambar/satuan/cake & pastry/cake utuh/cake redvelvet AI.png" alt="cake redvelvet">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/cake redvelvet AI.png" alt="cake red velvet">
             <div class="card-info">
                 <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
-                <h4>Cake Redvelvet</h4>
-                <p class="price">--</p>
-                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Cake Redvelvet', '--', './gambar/satuan/cake & pastry/cake utuh/cake redvelvet AI.png', '--')">Lihat Detail</button>
+                <h4>Cake Red Velvet</h4>
+                <p class="price">4.000</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Cake Red Velvet', '4.000', './gambar/satuan/cake & pastry/cake utuh/cake redvelvet AI.png', '--')">Lihat Detail</button>
             </div>
         </div>
 
@@ -1084,12 +1084,12 @@
         </div>
 
         <div class="card" data-category="cake-utuh">
-            <img src="./gambar/satuan/cake & pastry/cake utuh/pie coklat AI.png" alt="--">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/pie coklat AI.png" alt="pie cokelat">
             <div class="card-info">
                 <span style="font-size: 10px; color: var(--sage); font-weight: 700;">CAKE</span>
-                <h4>--</h4>
-                <p class="price">--</p>
-                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('--', '--', './gambar/satuan/cake & pastry/cake utuh/pie coklat AI.png', '--')">Lihat Detail</button>
+                <h4>Pie Cokelat</h4>
+                <p class="price">6.500</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Pie Cokelat', '6.500', './gambar/satuan/cake & pastry/cake utuh/pie coklat AI.png', '--')">Lihat Detail</button>
             </div>
         </div>
 
@@ -1247,13 +1247,31 @@
             <img src="./gambar/satuan/kue basah/gurih/roti sosis AI.png" alt="--">
             <div class="card-info">
                 <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
-                <h4>--</h4>
-                <p class="price">--</p>
-                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('--', '--', './gambar/satuan/kue basah/gurih/roti sosis AI.png', '--')">Lihat Detail</button>
+                <h4>Pastry Sosis</h4>
+                <p class="price">7.250</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Pastry Sosis', '7.250', '--', './gambar/satuan/kue basah/gurih/roti sosis AI.png', '--')">Lihat Detail</button>
             </div>
         </div>
 
+        <div class="card" data-category="basah-gurih">
+            <img src="./gambar/satuan/kue basah/gurih/roti bunder AI.png" alt="--">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>--</h4>
+                <p class="price">--</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('--', '--', './gambar/satuan/kue basah/gurih/roti bunder AI.png', '--')">Lihat Detail</button>
+            </div>
+        </div>
 
+        <div class="card" data-category="cake-utuh">
+            <img src="./gambar/satuan/cake & pastry/cake utuh/orange cake.JPG" alt="orange cake">
+            <div class="card-info">
+                <span style="font-size: 10px; color: var(--sage); font-weight: 700;">KUE BASAH</span>
+                <h4>Orange Cake</h4>
+                <p class="price">--</p>
+                <button class="btn-primary" style="width: 100%; border:none; padding: 10px; cursor:pointer;" onclick="openDetail('Orange Cake', '--', './gambar/satuan/cake & pastry/cake utuh/orange cake.JPG', '--')">Lihat Detail</button>
+            </div>
+        </div>
 
     </div>
 
@@ -1381,7 +1399,7 @@
         closeDetail();
     }
 
-    // 2. Logika Pagination
+    // 2. Logika Pagination & Selector Halaman
     function displayProducts() {
         const cards = Array.from(document.querySelectorAll('.card:not(.hidden)'));
         const totalPages = Math.ceil(cards.length / itemsPerPage);
@@ -1389,19 +1407,26 @@
         if (currentPage > totalPages && totalPages > 0) {
             currentPage = totalPages;
         }
+        if (currentPage < 1) currentPage = 1;
 
-        document.getElementById('pageNum').innerText = currentPage;
+        // Update tampilan nomor di box pagination (ID baru sesuai UI panah)
+        const displayNum = document.getElementById('currentPageDisplay') || document.getElementById('pageNum');
+        if (displayNum) displayNum.innerText = currentPage;
+
         cards.forEach((card, index) => {
             card.classList.add('page-hidden');
             const start = (currentPage - 1) * itemsPerPage;
             const end = start + itemsPerPage;
             if (index >= start && index < end) card.classList.remove('page-hidden');
         });
+
         document.getElementById('prevBtn').disabled = (currentPage === 1);
         document.getElementById('nextBtn').disabled = (currentPage === totalPages || totalPages === 0);
         
-        // Simpan ke sessionStorage agar aman saat refresh tapi reset saat keluar
         sessionStorage.setItem('bilcoCurrentPage', currentPage);
+
+        // Jika Anda menggunakan dropdown nomor halaman
+        if (typeof generatePageList === "function") generatePageList(totalPages);
     }
 
     function changePage(direction) {
@@ -1410,16 +1435,52 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // 3. Filter & Search
+    function goToPage(pageNumber) {
+        currentPage = pageNumber;
+        displayProducts();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const drop = document.getElementById('pageDropdown');
+        if (drop) drop.classList.remove('active');
+    }
+
+    function generatePageList(totalPages) {
+        const dropdown = document.getElementById('pageDropdown');
+        if (!dropdown) return;
+        dropdown.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const pageLink = document.createElement('a');
+            pageLink.href = "javascript:void(0)";
+            pageLink.innerText = i;
+            pageLink.onclick = () => goToPage(i);
+            dropdown.appendChild(pageLink);
+        }
+    }
+
+    function togglePageDropdown() {
+        const dropdown = document.getElementById('pageDropdown');
+        if (dropdown) dropdown.classList.toggle('active');
+    }
+
+    // 3. Filter & Search (DIKEMBANGKAN: Search di dalam Filter)
+    let currentCategory = 'semua'; // Variabel pembantu untuk mencatat kategori aktif
+
     function filterProduct(category, label) {
+        currentCategory = category; // Simpan kategori yang dipilih
         const cards = document.querySelectorAll('.card');
         document.getElementById('filterBtn').querySelector('span').innerText = label;
+        
+        // Bersihkan input search saat ganti kategori (opsional, agar tidak bingung)
+        document.getElementById('searchInput').value = ""; 
+
         cards.forEach(card => {
             const cat = card.getAttribute('data-category');
             if (category === 'semua' || (cat && cat.includes(category))) {
                 card.classList.remove('hidden');
-            } else { card.classList.add('hidden'); }
+            } else { 
+                card.classList.add('hidden'); 
+            }
         });
+
         currentPage = 1;
         displayProducts();
         document.getElementById('filterDropdown').classList.remove('show');
@@ -1428,11 +1489,25 @@
     function searchProduct() {
         const input = document.getElementById('searchInput').value.toLowerCase();
         const cards = document.querySelectorAll('.card');
+
         cards.forEach(card => {
             const title = card.querySelector('h4').innerText.toLowerCase();
-            if (title.includes(input)) { card.classList.remove('hidden'); } 
-            else { card.classList.add('hidden'); }
+            const cat = card.getAttribute('data-category');
+            
+            // CEK 1: Apakah masuk dalam kategori yang sedang aktif?
+            const isInCategory = (currentCategory === 'semua' || (cat && cat.includes(currentCategory)));
+            
+            // CEK 2: Apakah judul mengandung kata kunci search?
+            const matchesSearch = title.includes(input);
+
+            // Tampilkan hanya jika memenuhi KEDUA syarat
+            if (isInCategory && matchesSearch) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
         });
+
         currentPage = 1;
         displayProducts();
     }
@@ -1441,9 +1516,11 @@
     const filterBtn = document.getElementById('filterBtn');
     const filterDropdown = document.getElementById('filterDropdown');
     
-    filterBtn.onclick = (e) => { 
-        e.stopPropagation(); 
-        filterDropdown.classList.toggle('show'); 
+    if (filterBtn) {
+        filterBtn.onclick = (e) => { 
+            e.stopPropagation(); 
+            filterDropdown.classList.toggle('show'); 
+        }
     }
 
     function toggleSubMenu(event, element) {
@@ -1460,10 +1537,17 @@
 
     window.onclick = function(event) {
         const isClickInsideDropdown = event.target.closest('.dropdown');
-        if (!isClickInsideDropdown) {
+        if (!isClickInsideDropdown && filterDropdown) {
             filterDropdown.classList.remove('show');
             document.querySelectorAll('.side-menu').forEach(menu => menu.classList.remove('active'));
         }
+
+        const isClickInsidePageNum = event.target.closest('.page-selector-container');
+        if (!isClickInsidePageNum) {
+            const pageDrop = document.getElementById('pageDropdown');
+            if (pageDrop) pageDrop.classList.remove('active');
+        }
+
         if (event.target == document.getElementById("productModal")) closeDetail();
     }
 
