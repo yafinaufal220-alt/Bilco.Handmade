@@ -6,163 +6,263 @@
     <title>Paket Snack Box - Bilco.Handmade</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* --- CSS KHUSUS PAKET SNACK BOX (ASLI) --- */
-        .package-header {
-            background: linear-gradient(rgba(244, 241, 234, 0.9), rgba(244, 241, 234, 0.9)), 
-                        url('https://thumbs.dreamstime.com/b/jajan-pasar-festive-various-colorful-traditional-indonesian-snack-280084213.jpg');
-            background-size: cover;
-            padding: 80px 0;
-            text-align: center;
-            transition: 0.3s;
+<style>
+    /* --- CSS KHUSUS PAKET SNACK BOX (ASLI) --- */
+    .package-header {
+        background: linear-gradient(rgba(244, 241, 234, 0.9), rgba(244, 241, 234, 0.9)), 
+                    url('https://thumbs.dreamstime.com/b/jajan-pasar-festive-various-colorful-traditional-indonesian-snack-280084213.jpg');
+        background-size: cover;
+        padding: 80px 0;
+        text-align: center;
+        transition: 0.3s;
+    }
+
+    /* 1. Aturan Dasar Grid (Sembunyi secara default) */
+    .package-grid {
+        display: none; 
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 40px 15px;
+        animation: fadeIn 0.4s ease;
+    }
+
+    /* Tampilkan hanya jika active */
+    .package-grid.active { display: grid; } 
+
+    @keyframes fadeIn {
+        from { opacity: 0; } to { opacity: 1; }
+    }
+
+    @media (min-width: 768px) {
+        .package-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .pkg-card {
+        background: white;
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: 0.3s;
+        border: 1px solid #eee;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    body.dark-mode .pkg-card {
+        background: var(--white);
+        border-color: rgba(255,255,255,0.1);
+    }
+
+    .pkg-card:hover { transform: translateY(-10px); }
+
+    .pkg-img {
+        height: 220px;
+        background-color: #f9f9f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .pkg-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .pkg-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: var(--sugar, #8D6E63);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .pkg-content { 
+        padding: 25px; 
+        flex-grow: 1; 
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pkg-price {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--sage, #7A9461);
+        margin: 10px 0;
+    }
+
+    .pkg-list {
+        margin: 20px 0;
+        padding: 0;
+        list-style: none;
+        text-align: left;
+    }
+
+    .pkg-list li {
+        padding: 8px 0;
+        border-bottom: 1px dashed #eee;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    body.dark-mode .pkg-list li {
+        color: #ccc;
+        border-bottom-color: rgba(255,255,255,0.1);
+    }
+
+    .pkg-list li::before { content: '✅'; font-size: 14px; }
+
+    .btn-order-wa {
+        display: block;
+        text-align: center;
+        background: #25D366;
+        color: white;
+        padding: 12px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        margin-top: auto; 
+        transition: 0.3s;
+    }
+
+    .btn-order-wa:hover { opacity: 0.9; transform: scale(1.02); }
+
+    .tab-nav {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: -25px;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 100;
+        flex-wrap: wrap;
+    }
+
+    .tab-btn {
+        padding: 12px 20px;
+        border-radius: 50px;
+        border: none;
+        background: white;
+        color: #8D6E63;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: 0.3s;
+    }
+
+    .tab-btn.active {
+        background: #7A9461 !important; 
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(122, 148, 97, 0.3) !important;
+    }
+
+    /* Container harus display: none agar tab yang tidak dipilih tidak muncul */
+    .carousel-container {
+        position: relative;
+        max-width: 1500px;
+        margin: 50px auto;
+        padding: 0 60px; 
+        display: none; 
+        width: 100%;
+    }
+
+    /* --- LOGIKA CAROUSEL DESKTOP (Min 769px) --- */
+    @media (min-width: 769px) {
+        .package-grid.carousel-mode {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            scroll-behavior: smooth;
+            gap: 30px !important;
+            padding: 10px 0px !important;
+            grid-template-columns: none !important;
+            -ms-overflow-style: none;  
+            scrollbar-width: none;
+            justify-content: center; /* Kartu < 3 ke tengah */
         }
 
+        .package-grid.carousel-mode:has(.pkg-card:nth-child(4)) {
+            justify-content: flex-start;
+        }
+
+        .package-grid.carousel-mode::-webkit-scrollbar { display: none; }
+
+        .package-grid.carousel-mode .pkg-card {
+            flex: 0 0 calc(33.333% - 20px) !important; 
+            min-width: 300px; 
+            scroll-snap-align: start;
+        }
+    }
+
+    /* --- LOGIKA HP: TIDAK ADA CAROUSEL, TERPISAH PER TAB --- */
+    @media (max-width: 768px) {
+        .carousel-container { 
+            padding: 0 15px; 
+            margin: 20px auto;
+            /* Jangan tambahkan display: block di sini agar tab tetap berfungsi */
+        }
+        
+        /* Pastikan grid yang tidak aktif tetap tersembunyi */
         .package-grid {
-            display: none; /* Diubah menjadi none agar bisa berganti tab */
-            grid-template-columns: 1fr;
-            gap: 30px;
-            padding: 40px 15px;
-            animation: fadeIn 0.4s ease;
+            display: none !important; 
         }
 
-        .package-grid.active { display: grid; } /* Tampil saat aktif */
-
-        @keyframes fadeIn {
-            from { opacity: 0; } to { opacity: 1; }
+        /* Hanya tampilkan yang aktif dengan layout ke bawah */
+        .package-grid.active,
+        .package-grid.active.carousel-mode { 
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 20px !important;
+            overflow: visible !important;
+            padding: 20px 0 !important;
         }
 
-        @media (min-width: 768px) {
-            .package-grid { grid-template-columns: repeat(3, 1fr); }
+        .package-grid.active .pkg-card {
+            flex: 0 0 auto !important;
+            width: 100% !important;
+            min-width: unset !important;
         }
 
-        .pkg-card {
-            background: white;
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: 0.3s;
-            border: 1px solid #eee;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
+        .nav-arrow { display: none !important; } 
+    }
 
-        body.dark-mode .pkg-card {
-            background: var(--white);
-            border-color: rgba(255,255,255,0.1);
-        }
+    /* --- ELEMENT TAMBAHAN --- */
+    .nav-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 45px;
+        height: 45px;
+        background: white;
+        border-radius: 50%;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        cursor: pointer;
+        z-index: 10;
+        display: none; 
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s ease;
+        color: #8D6E63;
+    }
 
-        .pkg-card:hover { transform: translateY(-10px); }
+    .nav-arrow:hover { background: #7A9461; color: white; }
+    .prev-btn { left: 0; }
+    .next-btn { right: 0; }
 
-        .pkg-img {
-            height: 220px;
-            background-color: #f9f9f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .pkg-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .pkg-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--sugar, #8D6E63);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .pkg-content { 
-            padding: 25px; 
-            flex-grow: 1; 
-            display: flex;
-            flex-direction: column;
-        }
-
-        .pkg-price {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--sage, #7A9461);
-            margin: 10px 0;
-        }
-
-        .pkg-list {
-            margin: 20px 0;
-            padding: 0;
-            list-style: none;
-            text-align: left;
-        }
-
-        .pkg-list li {
-            padding: 8px 0;
-            border-bottom: 1px dashed #eee;
-            color: #666;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        body.dark-mode .pkg-list li {
-            color: #ccc;
-            border-bottom-color: rgba(255,255,255,0.1);
-        }
-
-        .pkg-list li::before { content: '✅'; font-size: 14px; }
-
-        .btn-order-wa {
-            display: block;
-            text-align: center;
-            background: #25D366;
-            color: white;
-            padding: 12px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            margin-top: auto; 
-            transition: 0.3s;
-        }
-
-        .btn-order-wa:hover { opacity: 0.9; transform: scale(1.02); }
-
-        /* --- CSS TAMBAHAN UNTUK TOMBOL TAB --- */
-        .tab-nav {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: -25px;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 100;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            padding: 12px 20px;
-            border-radius: 50px;
-            border: none;
-            background: white;
-            color: #8D6E63;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: 0.3s;
-        }
-
-        .tab-btn.active {
-            background: #7A9461;
-            color: white;
-        }
-    </style>
+    .pkg-card { display: flex; flex-direction: column; height: 100%; }
+    .pkg-content { display: flex; flex-direction: column; flex-grow: 1; padding: 25px; }
+    .pkg-list { flex-grow: 1; min-height: 180px; margin: 15px 0; }
+</style>
 </head>
 <body>
 
@@ -202,10 +302,10 @@
 
 <div class="container">
     <div class="tab-nav">
-        <button class="tab-btn active" onclick="openTab('snackbox')">Paket Snack Box</button>
-        <button class="tab-btn" onclick="openTab('nampan')">Paket Nampan</button>
-        <button class="tab-btn" onclick="openTab('tumpeng')">Paket Tumpeng</button>
-        <button class="tab-btn" onclick="openTab('tampah')">Paket Tampah</button>
+        <button class="tab-btn active" onclick="openTab('snackbox', event)">Paket Snack Box</button>
+        <button class="tab-btn" onclick="openTab('nampan', event)">Paket Nampan</button>
+        <button class="tab-btn" onclick="openTab('tumpeng', event)">Paket Tumpeng</button>
+        <button class="tab-btn" onclick="openTab('tampah', event)">Paket Tampah</button>
     </div>
 </div>
 
@@ -213,7 +313,7 @@
     <div id="snackbox" class="package-grid active">
         <div class="pkg-card">
             <div class="pkg-img">
-                <img src="./gambar/paket/snack box/isi 4.jpeg" alt="Paket Hemat">
+                <img src="./gambar/paket/snack box/isi 4 AI.png" alt="Paket Hemat">
                 <div class="pkg-badge">Hemat</div>
             </div>
             <div class="pkg-content">
@@ -231,7 +331,7 @@
 
         <div class="pkg-card">
             <div class="pkg-img">
-                <img src="./gambar/paket/snack box/isi 6.jpeg" alt="Paket Premium">
+                <img src="./gambar/paket/snack box/isi 6 AI.png" alt="Paket Premium">
                 <div class="pkg-badge" style="background: #7A9461;">Terlaris</div>
             </div>
             <div class="pkg-content">
@@ -249,6 +349,9 @@
             </div>
         </div>
     </div>
+
+<div class="carousel-container">
+    <button class="nav-arrow prev-btn" onclick="scrollGrid('nampan', 'left')">❮</button>
 
     <div id="nampan" class="package-grid">
         <div class="pkg-card">
@@ -287,7 +390,7 @@
 
         <div class="pkg-card">
             <div class="pkg-img">
-                <img src="./gambar/paket/nampan/sedang.jpeg" alt="Nampan">
+                <img src="./gambar/paket/nampan/sedang AI.png" alt="Nampan">
             </div>
             <div class="pkg-content">
                 <h3>Paket Nampan Sedang</h3>
@@ -302,10 +405,10 @@
                 <a href="https://wa.me/6282234618099?text=Halo Admin, saya ingin pesan Paket Nampan Sedang" class="btn-order-wa">Pesan via WhatsApp</a>
             </div>
         </div>
-    
+
         <div class="pkg-card">
             <div class="pkg-img">
-                <img src="./gambar/paket/nampan/besar.jpeg" alt="Nampan">
+                <img src="./gambar/paket/nampan/besar AI.png" alt="Nampan">
             </div>
             <div class="pkg-content">
                 <h3>Paket Nampan Besar</h3>
@@ -316,7 +419,6 @@
                     <li>Lapis (5pcs)</li>
                     <li>Gethuk (6pcs)</li>
                     <li>Kue Thok (5pcs)</li>
-                    <li></li>
                     <li>Lemper (5pcs)</li>
                 </ul>
                 <a href="https://wa.me/6282234618099?text=Halo Admin, saya ingin pesan Paket Nampan Besar" class="btn-order-wa">Pesan via WhatsApp</a>
@@ -324,10 +426,13 @@
         </div>  
     </div>
 
+    <button class="nav-arrow next-btn" onclick="scrollGrid('nampan', 'right')">❯</button>
+</div>
+
     <div id="tumpeng" class="package-grid">
         <div class="pkg-card">
             <div class="pkg-img">
-                <img src="./gambar/paket/tumpeng/paket A.jpeg" alt="Tumpeng">
+                <img src="./gambar/paket/tumpeng/paket A AI.png" alt="Tumpeng">
             </div>
             <div class="pkg-content">
                 <h3>Paket Tumpeng A</h3>
@@ -346,7 +451,7 @@
 
         <div class="pkg-card">
             <div class="pkg-img">
-                <img src="./gambar/paket/tumpeng/paket B.jpeg" alt="Tumpeng">
+                <img src="./gambar/paket/tumpeng/paket B AI.png" alt="Tumpeng">
             </div>
             <div class="pkg-content">
                 <h3>Paket Tumpeng B</h3>
@@ -365,7 +470,7 @@
 
         <div class="pkg-card">
             <div class="pkg-img">
-                <img src="./gambar/paket/tumpeng/paket C.jpeg" alt="Tumpeng">
+                <img src="./gambar/paket/tumpeng/paket C AI.png" alt="Tumpeng">
             </div>
             <div class="pkg-content">
                 <h3>Paket Tumpeng C</h3>
@@ -390,7 +495,7 @@
     <div id="tampah" class="package-grid">
         <div class="pkg-card">
             <div class="pkg-img">
-                <img src="./gambar/paket/tampah/tampah.jpeg" alt="Tumpeng">
+                <img src="./gambar/paket/tampah/tampah AI.png" alt="Tumpeng">
             </div>
             <div class="pkg-content">
                 <h3>Paket Tampah</h3>
@@ -478,35 +583,110 @@
 </footer>
 
 <script>
-    // FUNGSI TAB (BARU)
-    function openTab(tabName) {
-        const grids = document.querySelectorAll('.package-grid');
-        grids.forEach(grid => grid.classList.remove('active'));
+// 1. FUNGSI TAB: Otomatis deteksi mode Carousel vs Grid + Indikator Hijau
+function openTab(tabName, event) {
+    // Sembunyikan semua container
+    const allContainers = document.querySelectorAll('.carousel-container');
+    allContainers.forEach(container => {
+        container.style.display = 'none';
+    });
 
-        const btns = document.querySelectorAll('.tab-btn');
-        btns.forEach(btn => btn.classList.remove('active'));
+    // Reset status active dari semua grid
+    const allGrids = document.querySelectorAll('.package-grid');
+    allGrids.forEach(grid => grid.classList.remove('active'));
 
-        document.getElementById(tabName).classList.add('active');
-        event.currentTarget.classList.add('active');
-    }
+    // Reset warna tombol (hapus class active dari semua tombol tab)
+    const allBtns = document.querySelectorAll('.tab-btn');
+    allBtns.forEach(btn => btn.classList.remove('active'));
 
-    // LOGIKA ASLI TETAP DIBAWAH
-    let cart = JSON.parse(localStorage.getItem('bilcoCart')) || [];
-
-    function toggleMenu() {
-        const nav = document.getElementById("mainNav");
-        nav.classList.toggle("active");
-    }
-
-    function updateCartBadge() {
-        const badge = document.getElementById('cart-count');
-        if (badge) {
-            const totalQty = cart.reduce((total, item) => total + item.qty, 0);
-            badge.innerText = totalQty;
+    // Aktifkan Tab yang dipilih
+    const targetGrid = document.getElementById(tabName);
+    if (targetGrid) {
+        targetGrid.classList.add('active');
+        
+        const parentWrap = targetGrid.closest('.carousel-container');
+        if (parentWrap) {
+            parentWrap.style.display = 'block';
+            
+            const cards = targetGrid.querySelectorAll('.pkg-card');
+            
+            // LOGIKA CAROUSEL: Jika kartu > 3 maka aktifkan mode slide
+            if (cards.length > 3) {
+                targetGrid.style.display = 'flex';
+                targetGrid.classList.add('carousel-mode');
+                
+                const arrows = parentWrap.querySelectorAll('.nav-arrow');
+                arrows.forEach(a => a.style.display = 'flex');
+            } else {
+                targetGrid.style.display = 'grid';
+                targetGrid.classList.remove('carousel-mode');
+                
+                const arrows = parentWrap.querySelectorAll('.nav-arrow');
+                arrows.forEach(a => a.style.display = 'none');
+            }
         }
     }
 
-    document.addEventListener('DOMContentLoaded', updateCartBadge);
+    // LOGIKA WARNA TOMBOL: Menambahkan class active pada tombol yang diklik
+    if (event) {
+        if (event.currentTarget) {
+            // Ini untuk saat kamu klik tombolnya
+            event.currentTarget.classList.add('active');
+        } else if (event.classList) {
+            // Ini untuk saat halaman baru pertama kali dibuka
+            event.classList.add('active');
+        }
+    }
+
+    setTimeout(refreshCardSizes, 10);
+}
+
+// 2. FUNGSI PENYAMA TINGGI KARTU
+function refreshCardSizes() {
+    const activeGrid = document.querySelector('.package-grid.active');
+    if (!activeGrid) return;
+
+    const cards = activeGrid.querySelectorAll('.pkg-card');
+    let maxHeight = 0;
+
+    cards.forEach(card => {
+        card.style.height = 'auto';
+    });
+
+    cards.forEach(card => {
+        if (card.offsetHeight > maxHeight) maxHeight = card.offsetHeight;
+    });
+
+    cards.forEach(card => {
+        card.style.height = maxHeight + 'px';
+    });
+}
+
+// 3. FUNGSI SCROLL (Untuk Navigasi Panah)
+function scrollGrid(gridId, direction) {
+    const grid = document.getElementById(gridId);
+    const scrollAmount = grid.clientWidth / 2;
+    if (direction === 'left') {
+        grid.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+        grid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+}
+
+// 4. INISIALISASI
+document.addEventListener('DOMContentLoaded', () => {
+    // Jalankan update badge keranjang jika ada
+    if (typeof updateCartBadge === "function") updateCartBadge();
+    
+    // Cari tombol tab pertama dan aktifkan secara otomatis
+    const firstTabBtn = document.querySelector('.tab-btn');
+    if (firstTabBtn) {
+        const tabTarget = firstTabBtn.getAttribute('onclick').match(/'([^']+)'/)[1];
+        openTab(tabTarget, firstTabBtn);
+    }
+    
+    window.addEventListener('resize', refreshCardSizes);
+});
 </script>
 </body>
 </html>
