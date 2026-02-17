@@ -613,6 +613,27 @@
 </footer>
 
 <script>
+
+// fungsi keranjang
+let cart = JSON.parse(localStorage.getItem('bilcoCart')) || [];
+
+    function toggleMenu() {
+        const nav = document.getElementById("mainNav");
+        const hamburger = document.querySelector(".hamburger");
+        nav.classList.toggle("active");
+        hamburger.classList.toggle("active");
+    }
+
+    function updateCartBadge() {
+        const badge = document.getElementById('cart-count');
+        if (badge) {
+            const totalQty = cart.reduce((total, item) => total + item.qty, 0);
+            badge.innerText = totalQty;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', updateCartBadge);
+    
 // 1. FUNGSI TAB: Otomatis deteksi mode Carousel vs Grid + Indikator Hijau
 function openTab(tabName, event) {
     // Sembunyikan semua container

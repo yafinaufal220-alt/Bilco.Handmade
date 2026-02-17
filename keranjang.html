@@ -333,128 +333,106 @@
     </a>
 
     <script>
-        let cart = JSON.parse(localStorage.getItem('bilcoCart')) || [];
-        let currentPage = 1;
-        const itemsPerPage = 8;
+    // 1. Ambil data dengan fungsi yang lebih simpel
+    let cart = JSON.parse(localStorage.getItem('bilcoCart')) || [];
 
-        // Fungsi Hamburger Menu
-        function toggleMenu() {
-            const nav = document.getElementById("mainNav");
-            const hamburger = document.querySelector(".hamburger");
-            nav.classList.toggle("active");
-            hamburger.classList.toggle("active");
+    function renderCart() {
+        console.log("Memulai Render...");
+        console.table(cart); // Ini akan memunculkan tabel data di Console F12
+
+        const container = document.getElementById('cart-content');
+        const emptyMsg = document.getElementById('cart-empty');
+        const summaryBox = document.getElementById('cart-summary-box');
+        const badge = document.getElementById('cart-count');
+        const totalDisplay = document.getElementById('total-price-display');
+
+        // Update Badge Keranjang
+        const totalQty = cart.reduce((t, i) => t + (Number(i.qty) || 0), 0);
+        badge.innerText = totalQty;
+
+        // Jika Keranjang Kosong
+        if (cart.length === 0) {
+            container.innerHTML = '';
+            emptyMsg.style.display = 'block';
+            summaryBox.style.display = 'none';
+            return;
         }
 
-        function renderCart() {
-            const container = document.getElementById('cart-content');
-            const emptyMsg = document.getElementById('cart-empty');
-            const summaryBox = document.getElementById('cart-summary-box');
-            const badge = document.getElementById('cart-count');
-            const totalDisplay = document.getElementById('total-price-display');
-            const paginationContainer = document.getElementById('pagination-container');
+        // Jika Ada Isi
+        emptyMsg.style.display = 'none';
+        summaryBox.style.display = 'block';
 
-            badge.innerText = cart.reduce((t, i) => t + i.qty, 0);
+        let totalBayar = 0;
+        let html = '';
 
-            if (cart.length === 0) {
-                container.innerHTML = '';
-                emptyMsg.style.display = 'block';
-                summaryBox.style.display = 'none';
-                paginationContainer.innerHTML = '';
-                return;
-            }
+        cart.forEach((item, index) => {
+            // Pastikan properti terbaca meski namanya berbeda di katalog
+            const namaProduk = item.name || item.nama || "Produk";
+            const hargaProduk = Number(item.price) || Number(item.harga) || 0;
+            const fotoProduk = item.img || item.image || item.foto || "https://via.placeholder.com/250";
+            const jumlah = Number(item.qty) || 1;
+            
+            const subtotal = hargaProduk * jumlah;
+            totalBayar += subtotal;
 
-            emptyMsg.style.display = 'none';
-            summaryBox.style.display = 'block';
-
-            let totalBayar = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            totalDisplay.innerText = `Rp ${totalBayar.toLocaleString()}`;
-
-            const totalPages = Math.ceil(cart.length / itemsPerPage);
-            if (currentPage > totalPages) currentPage = totalPages;
-
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const paginatedItems = cart.slice(startIndex, endIndex);
-
-            let html = '';
-            paginatedItems.forEach((item, relativeIndex) => {
-                const actualIndex = startIndex + relativeIndex;
-                let subtotal = item.price * item.qty;
-                html += `
-                    <div class="cart-card">
-                        <img src="${item.img}" alt="${item.name}">
-                        <div class="card-body">
-                            <h4>${item.name}</h4>
-                            <p class="price">Rp ${item.price.toLocaleString()}</p>
-                            <p style="font-size: 12px; color: #888;">Subtotal: Rp ${subtotal.toLocaleString()}</p>
-                        </div>
-                        <div class="card-footer">
-                            <div class="qty-control">
-                                <button class="qty-btn" onclick="updateQty(${actualIndex}, -1)">-</button>
-                                <span class="qty-val">${item.qty}</span>
-                                <button class="qty-btn" onclick="updateQty(${actualIndex}, 1)">+</button>
-                            </div>
-                            <button class="btn-remove" onclick="removeItem(${actualIndex})" title="Hapus">🗑️</button>
-                        </div>
+            html += `
+                <div class="cart-card" style="display: block !important;">
+                    <img src="${fotoProduk}" alt="${namaProduk}" style="width:100%; height:180px; object-fit:cover;">
+                    <div class="card-body">
+                        <h4>${namaProduk}</h4>
+                        <p class="price">Rp ${hargaProduk.toLocaleString('id-ID')}</p>
+                        <p style="font-size: 12px; color: #888;">Subtotal: Rp ${subtotal.toLocaleString('id-ID')}</p>
                     </div>
-                `;
-            });
+                    <div class="card-footer">
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
+                            <span class="qty-val">${jumlah}</span>
+                            <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+                        </div>
+                        <button class="btn-remove" onclick="removeItem(${index})">🗑️</button>
+                    </div>
+                </div>
+            `;
+        });
 
-            container.innerHTML = html;
-            renderPagination(totalPages);
+        container.innerHTML = html;
+        totalDisplay.innerText = `Rp ${totalBayar.toLocaleString('id-ID')}`;
+    }
+
+    // Fungsi Aksi
+    window.updateQty = (index, delta) => {
+        cart[index].qty = (Number(cart[index].qty) || 1) + delta;
+        if (cart[index].qty < 1) return removeItem(index);
+        saveData();
+    };
+
+    window.removeItem = (index) => {
+        if (confirm("Hapus item ini?")) {
+            cart.splice(index, 1);
+            saveData();
         }
+    };
 
-        function renderPagination(totalPages) {
-            const container = document.getElementById('pagination-container');
-            if (totalPages <= 1) {
-                container.innerHTML = '';
-                return;
-            }
+    function saveData() {
+        localStorage.setItem('bilcoCart', JSON.stringify(cart));
+        renderCart();
+    }
 
-            let paginationHtml = '';
-            for (let i = 1; i <= totalPages; i++) {
-                paginationHtml += `
-                    <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">
-                        ${i}
-                    </button>
-                `;
-            }
-            container.innerHTML = paginationHtml;
-        }
+    function toggleMenu() {
+        document.getElementById("mainNav").classList.toggle("active");
+        document.querySelector(".hamburger").classList.toggle("active");
+    }
 
-        window.goToPage = (page) => {
-            currentPage = page;
-            renderCart();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+    window.checkoutWA = () => {
+        let msg = "*ORDER BARU - BILCO.HANDMADE*\n\n";
+        cart.forEach(i => msg += `• ${i.name || i.nama} (${i.qty}x)\n`);
+        let total = cart.reduce((t, i) => t + (Number(i.price || i.harga) * Number(i.qty)), 0);
+        msg += `\n*TOTAL: Rp ${total.toLocaleString('id-ID')}*`;
+        window.open(`https://wa.me/6282234618099?text=${encodeURIComponent(msg)}`, '_blank');
+    };
 
-        window.updateQty = (index, delta) => {
-            cart[index].qty += delta;
-            if (cart[index].qty < 1) return removeItem(index);
-            save();
-        };
-
-        window.removeItem = (index) => {
-            if (confirm("Hapus item ini?")) {
-                cart.splice(index, 1);
-                save();
-            }
-        };
-
-        function save() {
-            localStorage.setItem('bilcoCart', JSON.stringify(cart));
-            renderCart();
-        }
-
-        window.checkoutWA = () => {
-            let msg = "*ORDER BARU - BILCO.HANDMADE*\n\n";
-            cart.forEach(i => msg += `• ${i.name} (${i.qty}x)\n`);
-            let total = cart.reduce((t, i) => t + (i.price * i.qty), 0);
-            msg += `\n*TOTAL: Rp ${total.toLocaleString()}*\n\nMohon dikirim ke:\nNama:\nAlamat:`;
-            window.open(`https://wa.me/6282234618099?text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
-        document.addEventListener('DOMContentLoaded', renderCart);
-    </script>
+    // Jalankan saat halaman selesai dimuat
+    window.addEventListener('load', renderCart);
+</script>
 </body>
 </html>
