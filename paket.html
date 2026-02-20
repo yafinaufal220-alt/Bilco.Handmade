@@ -70,7 +70,11 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        cursor: pointer; /* Menambah indikator klik */
+        transition: 0.3s ease;
     }
+
+    .pkg-img img:hover { opacity: 0.9; }
 
     .pkg-badge {
         position: absolute;
@@ -82,6 +86,7 @@
         border-radius: 20px;
         font-size: 12px;
         font-weight: 700;
+        pointer-events: none; /* Badge tidak menghalangi klik gambar */
     }
 
     .pkg-content { 
@@ -165,7 +170,6 @@
         box-shadow: 0 4px 12px rgba(122, 148, 97, 0.3) !important;
     }
 
-    /* Container harus display: none agar tab yang tidak dipilih tidak muncul */
     .carousel-container {
         position: relative;
         max-width: 1500px;
@@ -175,7 +179,6 @@
         width: 100%;
     }
 
-    /* --- LOGIKA CAROUSEL DESKTOP (Min 769px) --- */
     @media (min-width: 769px) {
         .package-grid.carousel-mode {
             display: flex !important;
@@ -187,7 +190,7 @@
             grid-template-columns: none !important;
             -ms-overflow-style: none;  
             scrollbar-width: none;
-            justify-content: center; /* Kartu < 3 ke tengah */
+            justify-content: center; 
         }
 
         .package-grid.carousel-mode:has(.pkg-card:nth-child(4)) {
@@ -203,20 +206,16 @@
         }
     }
 
-    /* --- LOGIKA HP: TIDAK ADA CAROUSEL, TERPISAH PER TAB --- */
     @media (max-width: 768px) {
         .carousel-container { 
             padding: 0 15px; 
             margin: 20px auto;
-            /* Jangan tambahkan display: block di sini agar tab tetap berfungsi */
         }
         
-        /* Pastikan grid yang tidak aktif tetap tersembunyi */
         .package-grid {
             display: none !important; 
         }
 
-        /* Hanya tampilkan yang aktif dengan layout ke bawah */
         .package-grid.active,
         .package-grid.active.carousel-mode { 
             display: flex !important;
@@ -235,7 +234,6 @@
         .nav-arrow { display: none !important; } 
     }
 
-    /* --- ELEMENT TAMBAHAN --- */
     .nav-arrow {
         position: absolute;
         top: 50%;
@@ -262,9 +260,48 @@
     .pkg-card { display: flex; flex-direction: column; height: 100%; }
     .pkg-content { display: flex; flex-direction: column; flex-grow: 1; padding: 25px; }
     .pkg-list { flex-grow: 1; min-height: 180px; margin: 15px 0; }
+
+    /* --- CSS MODAL FULLSCREEN --- */
+    .img-fullscreen-modal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.9);
+        align-items: center;
+        justify-content: center;
+        cursor: zoom-out;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .img-fullscreen-modal img {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 10px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        cursor: default;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: white;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+    }
 </style>
 </head>
 <body>
+
+<div id="imageModal" class="img-fullscreen-modal" onclick="this.style.display='none'">
+    <span class="close-modal">&times;</span>
+    <img id="modalImg" src="" alt="Fullscreen View">
+</div>
 
 <header>
     <div class="container nav-container" style="height: 38px; display: flex; align-items: center; justify-content: space-between;">
@@ -317,16 +354,16 @@
                 <div class="pkg-badge">Hemat</div>
             </div>
             <div class="pkg-content">
-                <h3>Paket Isi 4</h3>
+                <h3 style="display: inline-block; margin-right: 5px;">Paket Isi 4</h3>
                 <div class="price-wrapper" style="margin: 10px 0;">
-                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Mulai Dari</span>
+                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">rata-rata (harga bisa bervariasi)</span>
                     <div class="pkg-price" style="margin: 0;">Rp 25.000</div>
                 </div>
                 <ul class="pkg-list">
                     <li>Gethuk</li>
                     <li>Lemper</li>
                     <li>Putri mandi</li>
-                    <li>belum tahu</li>
+                    <li>Cantik Manis Mutiara</li>
                 </ul>
                 <a href="https://wa.me/6282234618099?text=Halo Admin, saya ingin pesan Paket Snack Box Isi 4" class="btn-order-wa">Pesan via WhatsApp</a>
             </div>
@@ -338,9 +375,9 @@
                 <div class="pkg-badge" style="background: #7A9461;">Terlaris</div>
             </div>
             <div class="pkg-content">
-                <h3>Paket Isi 6</h3>
+                <h3 style="display: inline-block; margin-right: 5px;">Paket Isi 6</h3>
                 <div class="price-wrapper" style="margin: 10px 0;">
-                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Mulai Dari</span>
+                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">rata-rata (harga bisa bervariasi)</span>
                     <div class="pkg-price" style="margin: 0;">Rp 35.000</div>
                 </div>
                 <ul class="pkg-list">
@@ -367,7 +404,7 @@
             <div class="pkg-content">
                 <h3>Paket Nampan Mini</h3>
                 <div class="price-wrapper" style="margin: 10px 0;">
-                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Mulai Dari</span>
+                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">rata-rata (harga bisa bervariasi)</span>
                     <div class="pkg-price" style="margin: 0;">Rp 70.000</div>
                 </div>
                 <ul class="pkg-list">
@@ -387,7 +424,7 @@
             <div class="pkg-content">
                 <h3>Paket Nampan Kecil</h3>
                 <div class="price-wrapper" style="margin: 10px 0;">
-                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Mulai Dari</span>
+                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">rata-rata (harga bisa bervariasi)</span>
                     <div class="pkg-price" style="margin: 0;">Rp 90.000</div>
                 </div>
                 <ul class="pkg-list">
@@ -407,7 +444,7 @@
             <div class="pkg-content">
                 <h3>Paket Nampan Sedang</h3>
                 <div class="price-wrapper" style="margin: 10px 0;">
-                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Mulai Dari</span>
+                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">rata-rata (harga bisa bervariasi)</span>
                     <div class="pkg-price" style="margin: 0;">Rp 110.000</div>
                 </div>
                 <ul class="pkg-list">
@@ -428,7 +465,7 @@
             <div class="pkg-content">
                 <h3>Paket Nampan Besar</h3>
                 <div class="price-wrapper" style="margin: 10px 0;">
-                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Mulai Dari</span>
+                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">rata-rata (harga bisa bervariasi)</span>
                     <div class="pkg-price" style="margin: 0;">Rp 210.000</div>
                 </div>
                 <ul class="pkg-list">
@@ -442,7 +479,7 @@
                 </ul>
                 <a href="https://wa.me/6282234618099?text=Halo Admin, saya ingin pesan Paket Nampan Besar" class="btn-order-wa">Pesan via WhatsApp</a>
             </div>
-        </div>  
+        </div> 
     </div>
 
     <button class="nav-arrow next-btn" onclick="scrollGrid('nampan', 'right')">❯</button>
@@ -456,16 +493,18 @@
             <div class="pkg-content">
                 <h3>Paket Tumpeng A</h3>
                 <div class="price-wrapper" style="margin: 10px 0;">
-                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Mulai Dari</span>
+                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">rata-rata (harga bisa bervariasi)</span>
                     <div class="pkg-price" style="margin: 0;">Rp 410.000</div>
                 </div>
                 <ul class="pkg-list">
-                    <li>Roll Cherry</li>
-                    <li>Roll Strawberry</li>
-                    <li>Kue Thok</li>
-                    <li>Putri Mandi</li>
-                    <li>Lemper</li>
-                    <li>Sosis Solo</li>
+                    <li>Roll Cherry (6pcs)</li>
+                    <li>Roll Strawberry (6pcs)</li>
+                    <li>Kue Thok (8pcs)</li>
+                    <li>Putri Mandi 8(pcs)</li>
+                    <li>Lemper (8pcs)</li>
+                    <li>Sosis Solo (8pcs)</li>
+                    <br>
+                    <p>*NB: Varian Kue Bisa diganti dan Harga Menyesuaikan Isi</p>
                 </ul>
                 <a href="https://wa.me/6282234618099?text=Halo Admin, saya ingin pesan Paket Tumpeng A" class="btn-order-wa">Pesan via WhatsApp</a>
             </div>
@@ -478,16 +517,18 @@
             <div class="pkg-content">
                 <h3>Paket Tumpeng B</h3>
                 <div class="price-wrapper" style="margin: 10px 0;">
-                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Mulai Dari</span>
+                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">rata-rata (harga bisa bervariasi)</span>
                     <div class="pkg-price" style="margin: 0;">Rp 520.000</div>
                 </div>
                 <ul class="pkg-list">
-                    <li>Gethuk</li>
-                    <li>Kue Thok</li>
-                    <li>Truffle</li>
-                    <li>Cenil singkong</li>
-                    <li>Getas</li>
-                    <li>Sosis Solo</li>
+                    <li>Gethuk (18pcs)</li>
+                    <li>Kue Thok (8pcs)</li>
+                    <li>Truffle (8pcs)</li>
+                    <li>Cenil singkong (9pcs)</li>
+                    <li>Getas (9pcs)</li>
+                    <li>Sosis Solo (22pcs)</li>
+                    <br>
+                    <p>*NB: Varian Kue Bisa diganti dan Harga Menyesuaikan Isi</p>
                 </ul>
                 <a href="https://wa.me/6282234618099?text=Halo Admin, saya ingin pesan Paket Tumpeng B" class="btn-order-wa">Pesan via WhatsApp</a>
             </div>
@@ -500,20 +541,22 @@
             <div class="pkg-content">
                 <h3>Paket Tumpeng C</h3>
                 <div class="price-wrapper" style="margin: 10px 0;">
-                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Mulai Dari</span>
+                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">rata-rata (harga bisa bervariasi)</span>
                     <div class="pkg-price" style="margin: 0;">Rp 1.100.000</div>
                 </div>
                 <ul class="pkg-list">
-                    <li>Gethuk</li>
-                    <li>Ketan Srikaya</li>
-                    <li>Kue Thok</li>
-                    <li>Cantik Manis Jagung</li>
-                    <li>Putri Mandi</li>
-                    <li>Proll Tape</li>
-                    <li>Sosis Solo</li>
-                    <li>Pastel Ragout</li>
-                    <li>Serawut</li>
-                    <li>Klepon</li>
+                    <li>Gethuk (18pcs)</li>
+                    <li>Ketan Srikaya (12pcs)</li>
+                    <li>Kue Thok (14pcs)</li>
+                    <li>Cantik Manis Jagung (14pcs)</li>
+                    <li>Putri Mandi (12pcs)</li>
+                    <li>Proll Tape (12pcs)</li>
+                    <li>Sosis Solo (18pcs)</li>
+                    <li>Pastel Ragout (18pcs)</li>
+                    <li>Serawut (22pcs)</li>
+                    <li>Klepon (22pcs)</li>
+                    <br>
+                    <p>*NB: Varian Kue Bisa diganti dan Harga Menyesuaikan Isi</p>
                 </ul>
                 <a href="https://wa.me/6282234618099?text=Halo Admin, saya ingin pesan Paket Tumpeng C" class="btn-order-wa">Pesan via WhatsApp</a>
             </div>
@@ -528,15 +571,18 @@
             <div class="pkg-content">
                 <h3>Paket Tampah</h3>
                 <div class="price-wrapper" style="margin: 10px 0;">
-                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Mulai Dari</span>
+                    <span style="display: block; font-size: 13px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">rata-rata (harga bisa bervariasi)</span>
                     <div class="pkg-price" style="margin: 0;">Rp 300.000</div>
                 </div>
                 <ul class="pkg-list">
-                    <li>Putri Mandi</li>
-                    <li>Gethuk</li>
-                    <li>Ketan Srikaya</li>
-                    <li>Kue Thok</li>
-                    <li>Sosis Solo</li>
+                    <li>Putri Mandi (6pcs)</li>
+                    <li>Gethuk (15pcs)</li>
+                    <li>Ketan Srikaya (8pcs)</li>
+                    <li>Getas (9pcs)</li>
+                    <li>Kue Thok (7pcs)</li>
+                    <li>Sosis Solo (10pcs)</li>
+                    <br>
+                    <p>*NB: Varian Kue Bisa diganti dan Harga Menyesuaikan Isi</p>
                 </ul>
                 <a href="https://wa.me/6282234618099?text=Halo Admin, saya ingin pesan Paket Tampah" class="btn-order-wa">Pesan via WhatsApp</a>
             </div>
@@ -608,12 +654,11 @@
     </div>
 
     <div style="text-align: center; padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; margin-top: 30px; opacity: 0.7;">
-        &copy; 2026 Bilco.Handmade. Semua Hak Dilindungi.
+        © 2026 Bilco.Handmade. Semua Hak Dilindungi.
     </div>
 </footer>
 
 <script>
-
 // fungsi keranjang
 let cart = JSON.parse(localStorage.getItem('bilcoCart')) || [];
 
@@ -632,25 +677,30 @@ let cart = JSON.parse(localStorage.getItem('bilcoCart')) || [];
         }
     }
 
+    // FUNGSI KLIK GAMBAR UNTUK FULLSCREEN
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.pkg-img img')) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImg');
+            modal.style.display = 'flex';
+            modalImg.src = e.target.src;
+        }
+    });
+
     document.addEventListener('DOMContentLoaded', updateCartBadge);
     
-// 1. FUNGSI TAB: Otomatis deteksi mode Carousel vs Grid + Indikator Hijau
 function openTab(tabName, event) {
-    // Sembunyikan semua container
     const allContainers = document.querySelectorAll('.carousel-container');
     allContainers.forEach(container => {
         container.style.display = 'none';
     });
 
-    // Reset status active dari semua grid
     const allGrids = document.querySelectorAll('.package-grid');
     allGrids.forEach(grid => grid.classList.remove('active'));
 
-    // Reset warna tombol (hapus class active dari semua tombol tab)
     const allBtns = document.querySelectorAll('.tab-btn');
     allBtns.forEach(btn => btn.classList.remove('active'));
 
-    // Aktifkan Tab yang dipilih
     const targetGrid = document.getElementById(tabName);
     if (targetGrid) {
         targetGrid.classList.add('active');
@@ -661,7 +711,6 @@ function openTab(tabName, event) {
             
             const cards = targetGrid.querySelectorAll('.pkg-card');
             
-            // LOGIKA CAROUSEL: Jika kartu > 3 maka aktifkan mode slide
             if (cards.length > 3) {
                 targetGrid.style.display = 'flex';
                 targetGrid.classList.add('carousel-mode');
@@ -678,13 +727,10 @@ function openTab(tabName, event) {
         }
     }
 
-    // LOGIKA WARNA TOMBOL: Menambahkan class active pada tombol yang diklik
     if (event) {
         if (event.currentTarget) {
-            // Ini untuk saat kamu klik tombolnya
             event.currentTarget.classList.add('active');
         } else if (event.classList) {
-            // Ini untuk saat halaman baru pertama kali dibuka
             event.classList.add('active');
         }
     }
@@ -692,7 +738,6 @@ function openTab(tabName, event) {
     setTimeout(refreshCardSizes, 10);
 }
 
-// 2. FUNGSI PENYAMA TINGGI KARTU
 function refreshCardSizes() {
     const activeGrid = document.querySelector('.package-grid.active');
     if (!activeGrid) return;
@@ -713,7 +758,6 @@ function refreshCardSizes() {
     });
 }
 
-// 3. FUNGSI SCROLL (Untuk Navigasi Panah)
 function scrollGrid(gridId, direction) {
     const grid = document.getElementById(gridId);
     const scrollAmount = grid.clientWidth / 2;
@@ -724,12 +768,9 @@ function scrollGrid(gridId, direction) {
     }
 }
 
-// 4. INISIALISASI
 document.addEventListener('DOMContentLoaded', () => {
-    // Jalankan update badge keranjang jika ada
     if (typeof updateCartBadge === "function") updateCartBadge();
     
-    // Cari tombol tab pertama dan aktifkan secara otomatis
     const firstTabBtn = document.querySelector('.tab-btn');
     if (firstTabBtn) {
         const tabTarget = firstTabBtn.getAttribute('onclick').match(/'([^']+)'/)[1];
