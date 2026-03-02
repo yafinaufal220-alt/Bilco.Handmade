@@ -50,6 +50,19 @@ header {
 .logo { font-size: 24px; font-weight: 800; color: var(--sugar); text-decoration: none; }
 .logo span { color: var(--sage); }
 
+/* --- Logo Image --- */
+.logo-img {
+    height: 52px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
+.logo-img:hover {
+    filter: drop-shadow(0 6px 14px rgba(122,148,97,0.35));
+    transform: scale(1.06);
+}
+
 /* --- Nav & Dropdown System --- */
 nav {
     display: flex;
@@ -299,6 +312,7 @@ footer {
     nav {
         display: none; 
         flex-direction: column;
+        align-items: flex-start;
         position: fixed;
         top: 0;
         right: -100%;
@@ -316,8 +330,9 @@ footer {
     nav a, .nav-item {
         margin: 15px 0 !important;
         font-size: 18px !important;
-        display: block;
-        width: 100%;
+        display: inline-block !important;
+        width: auto !important;
+        text-align: left !important;
     }
 
     .dropdown-menu {

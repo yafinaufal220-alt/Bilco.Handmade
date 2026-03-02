@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-Book - Bilco.Handmade</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+    /* ── Hero ── */
+    .ebook-hero {
+        background: linear-gradient(135deg, var(--sage-light) 0%, #f9f7f2 60%, #e8e0d5 100%);
+        padding: 40px 20px 80px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .ebook-hero::before {
+        content: '';
+        position: absolute;
+        top: -60px; right: -60px;
+        width: 300px; height: 300px;
+        border-radius: 50%;
+        background: rgba(122,148,97,0.08);
+    }
+    .ebook-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -80px; left: -40px;
+        width: 250px; height: 250px;
+        border-radius: 50%;
+        background: rgba(141,110,99,0.06);
+    }
+    .ebook-hero .hero-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    .ebook-hero .hero-tag {
+        display: inline-block;
+        background: var(--sage);
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 18px;
+        border-radius: 50px;
+        margin-bottom: 24px;
+    }
+    .ebook-hero h1 {
+        font-size: 48px;
+        font-weight: 800;
+        color: var(--sugar);
+        line-height: 1.2;
+        margin-bottom: 20px;
+    }
+    .ebook-hero h1 span { color: var(--sage); }
+    .ebook-hero p {
+        font-size: 17px;
+        color: #666;
+        line-height: 1.8;
+        margin-bottom: 36px;
+        max-width: 560px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .ebook-hero-btns {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .ebook-hero-btns .btn-outline {
+        padding: 14px 32px;
+        border: 2px solid var(--sugar);
+        border-radius: 50px;
+        color: var(--sugar);
+        font-weight: 700;
+        font-size: 15px;
+        background: transparent;
+        text-decoration: none;
+        transition: 0.3s;
+        font-family: inherit;
+        cursor: pointer;
+        display: inline-block;
+    }
+    .ebook-hero-btns .btn-outline:hover {
+        background: var(--sugar);
+        color: white;
+    }
+    .ebook-hero .book-deco {
+        font-size: 80px;
+        display: block;
+        margin-bottom: 24px;
+        animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+    }
+
+    /* ── Container ── */
+    .ebook-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 80px 20px;
+    }
+
+    /* ── Section Title ── */
+    .section-header {
+        text-align: center;
+        margin-bottom: 52px;
+    }
+    .section-header .section-tag {
+        display: inline-block;
+        background: var(--sage-light);
+        color: var(--sage);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 18px;
+        border-radius: 50px;
+        margin-bottom: 16px;
+    }
+    .section-header h2 {
+        font-size: 34px;
+        font-weight: 800;
+        color: var(--sugar, #5a3e2b);
+        margin-bottom: 12px;
+    }
+    .section-header p {
+        font-size: 16px;
+        color: #888;
+        max-width: 500px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+    /* ── e-Book Grid ── */
+    .ebook-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 32px;
+    }
+
+    /* ── e-Book Card ── */
+    .ebook-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        transition: transform 0.35s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.35s ease;
+        display: flex;
+        flex-direction: column;
+        animation: fadeSlideUp 0.6s ease both;
+    }
+    .ebook-card:hover {
+        transform: translateY(-12px) scale(1.015);
+        box-shadow: 0 24px 48px rgba(0,0,0,0.11);
+    }
+
+    /* Cover */
+    .ebook-card-cover {
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        overflow: hidden;
+        background: #f0f7e9;
+        position: relative;
+    }
+    .ebook-card-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+        display: block;
+    }
+    .ebook-card:hover .ebook-card-cover img {
+        transform: scale(1.07);
+    }
+    .ebook-card-cover .cover-fallback {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 64px;
+        background: linear-gradient(135deg, var(--sage-light) 0%, #f0ede8 100%);
+    }
+
+    /* Badge baru */
+    .badge-new {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        background: var(--sage);
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 50px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Body */
+    .ebook-card-body {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .ebook-card-body .ebook-title {
+        font-size: 16px;
+        font-weight: 800;
+        color: #333;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .ebook-card-body .ebook-date {
+        font-size: 12px;
+        color: #bbb;
+        font-weight: 500;
+    }
+
+    /* CTA */
+    .ebook-card-footer {
+        padding: 0 20px 20px;
+    }
+    .btn-download {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px;
+        background: var(--sage);
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        font-family: inherit;
+        box-shadow: 0 4px 14px rgba(122,148,97,0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-download::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.22) 50%, transparent 70%);
+        background-size: 200% 100%;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .btn-download:hover::before { opacity: 1; animation: shimmer 0.7s linear; }
+    .btn-download:hover {
+        background: #667d50;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 22px rgba(122,148,97,0.42);
+    }
+    .btn-download:active { transform: scale(0.98); }
+
+    /* ── Modal Preview ── */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.65);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(4px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+        background: white;
+        border-radius: 24px;
+        width: 100%;
+        max-width: 860px;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+        animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+        from { opacity: 0; transform: scale(0.92); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 28px;
+        border-bottom: 1px solid #f0f0f0;
+        flex-shrink: 0;
+    }
+    .modal-header h3 {
+        font-size: 18px;
+        font-weight: 800;
+        color: #333;
+        margin: 0;
+    }
+    .modal-close {
+        background: #f5f5f5;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        font-size: 18px;
+        cursor: pointer;
+        color: #888;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s, color 0.2s;
+        font-family: inherit;
+        flex-shrink: 0;
+    }
+    .modal-close:hover { background: #fee; color: #e74c3c; }
+    .modal-body {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    .modal-body iframe {
+        width: 100%;
+        flex: 1;
+        border: none;
+        min-height: 500px;
+    }
+    .modal-footer-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 28px;
+        border-top: 1px solid #f0f0f0;
+        background: #fafafa;
+        flex-shrink: 0;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .modal-footer-bar span {
+        font-size: 13px;
+        color: #888;
+    }
+    .btn-dl-modal {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 24px;
+        background: var(--sage);
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: background 0.2s, transform 0.2s;
+        font-family: inherit;
+    }
+    .btn-dl-modal:hover { background: #667d50; transform: translateY(-1px); }
+
+    /* ── Fullscreen button ── */
+    .btn-fullscreen {
+        background: #f5f5f5;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        font-size: 16px;
+        cursor: pointer;
+        color: #888;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s, color 0.2s, transform 0.2s;
+        font-family: inherit;
+        flex-shrink: 0;
+        title: "Fullscreen";
+    }
+    .btn-fullscreen:hover { background: #e8f5e9; color: var(--sage); transform: scale(1.1); }
+
+    /* ── Modal fullscreen mode ── */
+    .modal-box.is-fullscreen {
+        max-width: 100vw !important;
+        width: 100vw !important;
+        max-height: 100vh !important;
+        height: 100vh !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+    }
+    .modal-overlay.is-fullscreen {
+        padding: 0 !important;
+    }
+    .modal-box.is-fullscreen .modal-body iframe {
+        min-height: unset !important;
+    }
+
+    /* Animasi transisi fullscreen */
+    .modal-box {
+        transition: max-width 0.3s ease, width 0.3s ease,
+                    max-height 0.3s ease, height 0.3s ease,
+                    border-radius 0.3s ease;
+    }
+
+    /* ── Empty State ── */
+    .ebook-empty {
+        text-align: center;
+        padding: 80px 20px;
+        color: #ccc;
+    }
+    .ebook-empty .empty-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+        display: block;
+    }
+    .ebook-empty p {
+        font-size: 16px;
+        color: #bbb;
+    }
+
+    /* ── Animasi ── */
+    @keyframes fadeSlideUp {
+        from { opacity: 0; transform: translateY(28px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+        0%   { background-position: -200% center; }
+        100% { background-position: 200% center; }
+    }
+    @keyframes floatLogo {
+        0%,100% { transform: translateY(0); }
+        50%      { transform: translateY(-4px); }
+    }
+
+    /* Stagger card animasi */
+        .ebook-card:nth-child(1) { animation-delay: 0.0s; }
+    .ebook-card:nth-child(2) { animation-delay: 0.08s; }
+    .ebook-card:nth-child(3) { animation-delay: 0.16s; }
+    .ebook-card:nth-child(4) { animation-delay: 0.24s; }
+    .ebook-card:nth-child(5) { animation-delay: 0.32s; }
+    .ebook-card:nth-child(6) { animation-delay: 0.4s; }
+    .ebook-card:nth-child(7) { animation-delay: 0.48s; }
+    .ebook-card:nth-child(8) { animation-delay: 0.56s; }
+    .ebook-card:nth-child(9) { animation-delay: 0.64s; }
+    .ebook-card:nth-child(10) { animation-delay: 0.72s; }
+    .ebook-card:nth-child(11) { animation-delay: 0.8s; }
+    .ebook-card:nth-child(12) { animation-delay: 0.88s; }
+    .ebook-card:nth-child(13) { animation-delay: 0.96s; }
+    .ebook-card:nth-child(14) { animation-delay: 1.04s; }
+    .ebook-card:nth-child(15) { animation-delay: 1.12s; }
+    .ebook-card:nth-child(16) { animation-delay: 1.2s; }
+    .ebook-card:nth-child(17) { animation-delay: 1.28s; }
+    .ebook-card:nth-child(18) { animation-delay: 1.36s; }
+    .ebook-card:nth-child(19) { animation-delay: 1.44s; }
+    .ebook-card:nth-child(20) { animation-delay: 1.52s; }
+
+    /* ── Misc ── */
+    .logo-img { height: 52px; width: auto; display: block; object-fit: contain; ); }
+    @media (max-width: 768px) {
+        .logo-img { height: 42px; }
+        .ebook-hero h1 { font-size: 32px; }
+        .ebook-hero p { font-size: 15px; }
+        .ebook-hero .book-deco { font-size: 60px; }
+        .section-header h2 { font-size: 26px; }
+        .ebook-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
+        .modal-box { max-height: 95vh; }
+    }
+
+    /* Header shadow dinamis */
+    header {
+        transition: box-shadow 0.4s ease, background 0.3s ease;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.06) !important;
+    }
+
+    /* Logo hover */
+    .logo-img:hover {
+        filter: drop-shadow(0 6px 14px rgba(122,148,97,0.35));
+        transform: scale(1.06) !important;
+    }
+
+    /* Nav underline slide */
+    nav a { position: relative; transition: color 0.25s ease !important; }
+    nav a::after {
+        content: ''; position: absolute; bottom: -3px; left: 50%;
+        width: 0; height: 2px; background: var(--sage, #7A9461);
+        border-radius: 2px; transition: width 0.3s ease, left 0.3s ease;
+    }
+    nav a:hover::after, nav a.active::after { width: 100%; left: 0; }
+    @media (max-width: 768px) {
+        nav a { display: inline-block !important; width: auto !important; }
+    }
+
+    /* Card hover global (card, cart-card, paket-card) */
+    .card, .cart-card, .paket-card {
+        transition: transform 0.35s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.35s ease !important;
+        will-change: transform;
+    }
+    .card:hover, .cart-card:hover, .paket-card:hover {
+        transform: translateY(-12px) scale(1.015) !important;
+        box-shadow: 0 24px 48px rgba(0,0,0,0.11) !important;
+    }
+    .value-card { transition: transform 0.35s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.35s ease !important; }
+    .value-card:hover {
+        transform: translateY(-8px) !important;
+        box-shadow: 0 16px 32px rgba(122,148,97,0.15) !important;
+        border-color: var(--sage) !important;
+    }
+    .card img, .cart-card img, .paket-card img { transition: transform 0.5s ease !important; }
+    .card:hover img, .cart-card:hover img, .paket-card:hover img { transform: scale(1.07) !important; }
+
+    /* btn-primary shimmer + lift */
+    .btn-primary {
+        position: relative; overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        box-shadow: 0 4px 16px rgba(122,148,97,0.28) !important;
+    }
+    .btn-primary::before {
+        content: ''; position: absolute; top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.22) 50%, transparent 70%);
+        background-size: 200% 100%; opacity: 0; transition: opacity 0.3s;
+    }
+    .btn-primary:hover::before { opacity: 1; animation: shimmer 0.7s linear; }
+    .btn-primary:hover { transform: translateY(-3px) !important; box-shadow: 0 10px 28px rgba(122,148,97,0.42) !important; }
+    .btn-primary:active { transform: translateY(0) scale(0.98) !important; }
+
+    /* btn-secondary & btn-outline */
+    .btn-secondary, .btn-outline {
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+    }
+    .btn-secondary:hover, .btn-outline:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.14) !important;
+    }
+
+    /* Cart icon bounce */
+    .cart-icon { transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1) !important; }
+    .cart-icon:hover { transform: scale(1.22) rotate(-5deg) !important; }
+
+    /* Hero fade-in bertahap */
+    .hero-content h1, .about-hero h1, .ebook-hero h1 {
+        animation: fadeSlideUp 0.8s ease both;
+        text-shadow: 0 3px 24px rgba(0,0,0,0.25);
+    }
+    .hero-content p, .about-hero p, .ebook-hero p { animation: fadeSlideUp 0.8s 0.15s ease both; }
+    .hero-btns, .ebook-hero-btns { animation: fadeSlideUp 0.8s 0.3s ease both; }
+
+    /* WA Float */
+    .wa-float { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease !important; }
+    .wa-float:hover { transform: translateY(-5px) scale(1.06) !important; box-shadow: 0 14px 36px rgba(37,211,102,0.45) !important; }
+
+    /* Footer link slide */
+    footer a { display: inline-block; transition: opacity 0.2s ease, transform 0.2s ease !important; }
+    footer a:hover { opacity: 1 !important; transform: translateX(5px); }
+
+    /* Stats hover */
+    .stats-section .stat-item { transition: transform 0.3s ease; }
+    .stats-section .stat-item:hover { transform: translateY(-5px) scale(1.05); }
+
+    /* Stat angka gradient */
+    .stat-item h2 {
+        background: linear-gradient(135deg, white 40%, rgba(255,255,255,0.6));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: none;
+    }
+
+    /* Badge / tag */
+    .tag-populer, .hero-tag, .kategori-badge {
+        box-shadow: 0 3px 10px rgba(0,0,0,0.12) !important;
+        transition: transform 0.2s ease;
+    }
+    .tag-populer:hover { transform: scale(1.05); }
+
+    /* Checkout section glow */
+    .checkout-section { transition: box-shadow 0.3s ease; }
+    .checkout-section:hover { box-shadow: 0 8px 30px rgba(122,148,97,0.15) !important; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--sage, #7A9461); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--sugar, #8D6E63); }
+
+    /* ── Pagination ── */
+    .pagination-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin: 50px 0 20px;
+    }
+    .page-btn {
+        padding: 10px 18px;
+        border: 2px solid var(--sage);
+        background: white;
+        color: var(--sage);
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        min-height: 42px;
+        font-family: inherit;
+    }
+    .page-btn span { font-size: 16px; line-height: 1; }
+    .page-btn:hover:not(:disabled) { background: var(--sage); color: white; }
+    .page-btn:disabled { border-color: #eee; color: #ccc; cursor: not-allowed; }
+    .page-num {
+        width: 42px;
+        height: 42px;
+        background: var(--sage);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container nav-container">
+        <a href="index.html" style="text-decoration:none;">
+            <img src="" alt="Bilco.Handmade"
+                 style="width: 120px; height: 72px; object-fit: contain;" class="logo-img"
+                 onerror="this.onerror=null; this.parentElement.innerHTML='<div class=&quot;logo&quot;>Bilco.<span>Handmade</span></div>'">
+        </a>
+        <nav id="mainNav">
+            <a href="index.html">Beranda</a>
+            <a href="katalog.html">Katalog</a>
+            <a href="paket.html">Kue Paket</a>
+            <a href="tentang.html">Tentang Kami</a>
+            <a href="ebook.html" class="active">e-Book</a>
+        </nav>
+        <div class="nav-icons">
+            <a href="keranjang.html" style="text-decoration: none; color: inherit;">
+                <div class="cart-icon">🛒<span id="cart-count">0</span></div>
+            </a>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ── HERO ── -->
+<section class="ebook-hero">
+    <div class="hero-inner">
+        <span class="book-deco">📖</span>
+        <span class="hero-tag">Eksklusif dari Bilco.Handmade</span>
+        <h1>Resep & Rahasia<br><span>Jajanan Pasar</span> Terbaik</h1>
+        <p>Pelajari cara membuat jajanan tradisional Indonesia yang lezat, cantik, dan berkualitas premium langsung dari dapur Bilco.Handmade.</p>
+        <div class="ebook-hero-btns">
+            <a href="#ebook-list" class="btn-primary" style="text-decoration:none; padding: 14px 36px; border-radius: 50px; font-size: 15px;">
+                📚 Lihat e-Book
+            </a>
+            <a href="katalog.html" class="btn-outline">Lihat Produk Kami</a>
+        </div>
+    </div>
+</section>
+
+<!-- ── DAFTAR e-BOOK ── -->
+<div class="ebook-container" id="ebook-list">
+
+    <div class="ebook-grid">
+        <div class="ebook-card">
+            <div class="ebook-card-cover">
+                <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&h=400&fit=crop" alt="Resep Kue Tradisional">
+                <span class="badge-new">✨ Baru</span>
+            </div>
+            <div class="ebook-card-body">
+                <div class="ebook-title">Resep Kue Tradisional Jawa</div>
+                <div class="ebook-date">📅 01 Jan 2025</div>
+            </div>
+            <div class="ebook-card-footer">
+                <button class="btn-download" onclick="bukaPreview('Resep Kue Tradisional Jawa', '#')">👁️ Baca e-Book</button>
+            </div>
+        </div>
+        <div class="ebook-card">
+            <div class="ebook-card-cover">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300&h=400&fit=crop" alt="Rahasia Jajanan Pasar">
+                <span class="badge-new">✨ Baru</span>
+            </div>
+            <div class="ebook-card-body">
+                <div class="ebook-title">Rahasia Jajanan Pasar Premium</div>
+                <div class="ebook-date">📅 15 Feb 2025</div>
+            </div>
+            <div class="ebook-card-footer">
+                <button class="btn-download" onclick="bukaPreview('Rahasia Jajanan Pasar Premium', '#')">👁️ Baca e-Book</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Pagination -->
+    <div class="pagination-wrap" id="paginationWrap">
+        <button class="page-btn" id="prevBtn" disabled>
+            <span>&larr;</span> Sebelumnya
+        </button>
+        <div class="page-num" id="pageNum">1</div>
+        <button class="page-btn" id="nextBtn">
+            Selanjutnya <span>&rarr;</span>
+        </button>
+    </div>
+
+
+</div>
+
+<!-- ── MODAL PREVIEW PDF ── -->
+<div class="modal-overlay" id="modalPreview">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="modalTitle">📖 Membaca e-Book</h3>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <button class="btn-fullscreen" id="btnFullscreen"
+                        onclick="toggleFullscreen()" title="Layar Penuh">⛶</button>
+                <button class="modal-close" onclick="tutupPreview()">✕</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <iframe id="pdfFrame" src="" title="Preview e-Book"></iframe>
+        </div>
+        <div class="modal-footer-bar">
+            <span>Klik tombol di bawah untuk mengunduh file PDF.</span>
+            <a href="#" id="btnUnduh" class="btn-dl-modal" download>
+                ⬇️ Unduh PDF
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container footer-grid">
+        <div class="footer-col">
+            <h2 class="logo" style="color: white; margin-bottom: 20px;">Bilco.<span>Handmade</span></h2>
+            <p>Membawa kehangatan jajanan tradisional ke dalam kemasan modern yang higienis dan elegan.</p>
+        </div>
+        
+        <div class="footer-col">
+            <h3>Navigasi</h3>
+            <ul>
+                <li><a href="index.html" class="active">Beranda</a></li>
+                <li><a href="katalog.html">Katalog</a></li>
+                <li><a href="paket.html">Kue Paket</a></li>
+                <li><a href="tentang.html">Tentang Kami</a></li>
+                <li><a href="ebook.html">e-Book</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h3>Hubungi Kami</h3>
+            <p style="display: flex; gap: 10px; align-items: flex-start;">
+                <img src="./gambar/logo/Google_Maps_Logo_PNG_Vector__CDR__Free_Download-removebg-preview.ico" width="18" height="20" alt="Maps" style="margin-top: 3px;">
+    
+                <a href="https://maps.app.goo.gl/gSoSL3fybg9soDn36" target="_blank" style="text-decoration: none; color: inherit;">
+                <span>Perum Puri Majapahit, Jl. Jayanegara No.02 Blok D, Gatul, Banjaragung, Kec. Puri, Mojokerto.</span>
+                </a>
+            </p>
+
+            <p style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                <img src="./gambar/logo/Whatsapp_Icon_Whatsapp_Logo_Whatsapp_Icon_Free_Template__Whatsapp_Icons__Logo_Icons__Template_Icons_PNG_and_Vector_with_Transparent_Background_for_Free_Download-removebg-preview.ico" width="20" height="20" alt="WA">
+                <a href="https://wa.me/6282234618099" target="_blank" style="text-decoration: none; color: inherit;">0822-3461-8099</a>
+            </p>
+
+            <p style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                <img src="./gambar/logo/ig (1).ico" width="20" height="20" alt="IG">
+                <a href="https://instagram.com/bilco.handmade" target="_blank" style="text-decoration: none; color: inherit;">bilco.handmade</a>
+            </p>
+
+            <p style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                <img src="./gambar/logo/TikTok_Logo_Video_Tik_Tok_Sign_Symbol_Musically-removebg-preview (1).ico" width="20" height="20" alt="TikTok">
+                <a href="https://tiktok.com/@bilcohandmade" target="_blank" style="text-decoration: none; color: inherit;">bilcohandmade</a>
+            </p>
+        </div>
+
+        <div class="footer-col">
+            <h3>Jam Operasional</h3>
+            <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; font-size: 14px; line-height: 1.6;">
+                <p>Senin - Sabtu: 08.00 - 17.00</p>
+                <p>Minggu: Tutup</p>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; margin-top: 30px; opacity: 0.7;">
+        &copy; 2026 Bilco.Handmade. Semua Hak Dilindungi.
+    </div>
+</footer>
+
+<a href="https://wa.me/6282234618099" class="wa-float">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WA">
+    <span>Tanya Admin</span>
+</a>
+
+<script>
+    /* ── Cart ── */
+    let cart = JSON.parse(localStorage.getItem('bilcoCart')) || [];
+
+    function updateCartBadge() {
+        const badge = document.getElementById('cart-count');
+        if (badge) {
+            const totalQty = cart.reduce((total, item) => total + item.qty, 0);
+            badge.innerText = totalQty;
+        }
+    }
+
+    /* ── Nav ── */
+    function toggleMenu() {
+        const nav = document.getElementById("mainNav");
+        const hamburger = document.querySelector(".hamburger");
+        nav.classList.toggle("active");
+        hamburger.classList.toggle("active");
+    }
+
+    /* ── Modal Preview PDF ── */
+    function bukaPreview(judul, filePath) {
+        document.getElementById('modalTitle').textContent = '📖 ' + judul;
+        document.getElementById('pdfFrame').src = filePath;
+        document.getElementById('btnUnduh').href = filePath;
+        document.getElementById('modalPreview').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function tutupPreview() {
+        // Keluar fullscreen dulu kalau sedang fullscreen
+        if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+        }
+        const box = document.querySelector('.modal-box');
+        const overlay = document.getElementById('modalPreview');
+        box.classList.remove('is-fullscreen');
+        overlay.classList.remove('is-fullscreen');
+        document.getElementById('btnFullscreen').textContent = '⛶';
+        document.getElementById('btnFullscreen').title = 'Layar Penuh';
+        document.getElementById('modalPreview').classList.remove('active');
+        document.getElementById('pdfFrame').src = '';
+        document.body.style.overflow = '';
+    }
+
+    /* ── Fullscreen ── */
+    function toggleFullscreen() {
+        const box = document.querySelector('.modal-box');
+        const overlay = document.getElementById('modalPreview');
+        const btn = document.getElementById('btnFullscreen');
+        const isFs = box.classList.contains('is-fullscreen');
+
+        if (!isFs) {
+            // Masuk fullscreen CSS
+            box.classList.add('is-fullscreen');
+            overlay.classList.add('is-fullscreen');
+            btn.textContent = '⊡';
+            btn.title = 'Keluar Layar Penuh';
+
+            // Coba native fullscreen API pada modal-box
+            if (box.requestFullscreen) {
+                box.requestFullscreen().catch(() => {});
+            } else if (box.webkitRequestFullscreen) {
+                box.webkitRequestFullscreen();
+            }
+        } else {
+            // Keluar fullscreen CSS
+            box.classList.remove('is-fullscreen');
+            overlay.classList.remove('is-fullscreen');
+            btn.textContent = '⛶';
+            btn.title = 'Layar Penuh';
+
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(() => {});
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+    }
+
+    /* Sync tombol jika user tekan F11 / Escape native */
+    document.addEventListener('fullscreenchange', function() {
+        const box = document.querySelector('.modal-box');
+        const overlay = document.getElementById('modalPreview');
+        const btn = document.getElementById('btnFullscreen');
+        if (!document.fullscreenElement) {
+            box.classList.remove('is-fullscreen');
+            overlay.classList.remove('is-fullscreen');
+            if (btn) { btn.textContent = '⛶'; btn.title = 'Layar Penuh'; }
+        }
+    });
+
+    /* Tutup modal klik di luar */
+    document.getElementById('modalPreview').addEventListener('click', function(e) {
+        if (e.target === this) tutupPreview();
+    });
+
+    /* Tutup modal tombol Escape */
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') tutupPreview();
+    });
+
+    /* ── Pagination ── */
+    const BOOKS_PER_PAGE = 8;
+    let currentPage = 1;
+
+    function initPagination() {
+        const allCards = Array.from(document.querySelectorAll('.ebook-card'));
+        const totalPages = Math.ceil(allCards.length / BOOKS_PER_PAGE);
+
+        if (allCards.length <= BOOKS_PER_PAGE) {
+            // Tidak perlu pagination, semua tampil
+            document.getElementById('paginationWrap').style.display = 'none';
+            return;
+        }
+
+        showPage(1, allCards, totalPages, true);
+    }
+
+    function showPage(page, allCards, totalPages, isInit = false) {
+        currentPage = page;
+        const start = (page - 1) * BOOKS_PER_PAGE;
+        const end   = start + BOOKS_PER_PAGE;
+
+        // Tampilkan/sembunyikan card dengan animasi
+        allCards.forEach((card, idx) => {
+            if (idx >= start && idx < end) {
+                card.style.display = '';
+                card.style.animation = 'none';
+                void card.offsetHeight; // reflow trigger (void agar tidak dianggap unused expression)
+                card.style.animation = 'fadeSlideUp 0.4s ease both';
+                card.style.animationDelay = ((idx - start) * 0.06) + 's';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Update label jumlah
+        const label = document.getElementById('ebookCountLabel');
+        if (label) {
+            label.textContent = allCards.length + ' e-Book tersedia';
+        }
+
+        renderPagination(page, totalPages, allCards);
+
+        // Scroll ke ebook-list hanya saat ganti halaman manual
+        if (!isInit) {
+            document.getElementById('ebook-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    function renderPagination(page, totalPages, allCards) {
+        document.getElementById('pageNum').textContent = page;
+        document.getElementById('prevBtn').disabled = (page === 1);
+        document.getElementById('nextBtn').disabled = (page === totalPages || totalPages === 0);
+        document.getElementById('prevBtn').onclick = () => showPage(page - 1, allCards, totalPages);
+        document.getElementById('nextBtn').onclick = () => showPage(page + 1, allCards, totalPages);
+    }
+
+
+
+    /* ── Init ── */
+    document.addEventListener('DOMContentLoaded', function() {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        updateCartBadge();
+        initPagination();
+    });
+</script>
+</body>
+</html>
